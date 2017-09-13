@@ -169,14 +169,30 @@
 
 <section data-markdown>
   <script type="text/template">
+    ## Common workflow
+
+    ![HMR](images/hmr-reload.png)
+
+    1. Make the change in your code
+    2. Refresh the page in your browser
+    3. Re-add the data and push all of the same buttons
+
+    [Source](https://code-cartoons.com/hot-reloading-and-time-travel-debugging-what-are-they-3c8ed2812f35) <!-- .element class="source" -->
+  </script>
+</section>
+
+<section data-markdown data-notes="Se questa vi sembra magia...">
+  <script type="text/template">
     ## Hot reloading
+
+    ![HMR](images/hmr.png)
 
     - React hot reloading
     - Reducers hot reloading
   </script>
 </section>
 
-<section data-markdown>
+<section data-markdown data-notes="">
   <script type="text/template">
     ## New workflow
 
@@ -237,7 +253,7 @@
   <script type="text/template">
     ## Redux flow
 
-    ![Redux flow](images/redux-flow.gif) <!-- .element class="default-img"-->
+    ![Redux flow](images/redux-flow.gif)
   </script>
 </section>
 
@@ -305,13 +321,16 @@
   Redux logging in production: https://blog.logrocket.com/redux-logging-in-production-3b2a4816b713
   Maximize debuggability in Redux: https://blog.logrocket.com/maximizing-debuggability-with-redux-79b2ad07b64c
 -->
-<section data-markdown>
+<section data-markdown data-notes="Local vs global state">
   <script type="text/template">
     ## Moar information
 
     1. Keep important state in Redux
     2. Dispatch actions for network requests, successes and failures
-    3. Use Redux to manage async results like WebSockets
+    3. Use Redux to manage async results
+      - WebSockets
+      - LocalStorage
+      - *react-router-redux*
   </script>
 </section>
 

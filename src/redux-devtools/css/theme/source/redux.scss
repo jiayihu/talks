@@ -58,7 +58,7 @@ $selectionBackgroundColor: $primary;
   padding-top: 0 !important;
 }
 
-.reveal .default-img {
+.reveal section img {
   margin: 0;
   border: none;
   background: none;
@@ -75,4 +75,8 @@ $selectionBackgroundColor: $primary;
 
 .reveal section ul ul li {
   font-size: 0.75em;
+}
+
+.reveal .source {
+  font-size: 85%;
 }
