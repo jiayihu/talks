@@ -1,0 +1,376 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico?v=2' />
+
+    <title>Debugging with Redux</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/redux.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/custom.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+<div class="reveal">
+  <div class="slides">
+
+<section data-markdown data-background-color="#592d89">
+  <script type="text/template">
+    ![Redux](./images/redux.svg) <!-- .element class="default-img" style="width: 30%;" -->
+
+    Redux Debugging 🔧 <!-- .element class="white" style="font-size: 2.5em;" -->
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Jiayi Hu
+
+    Front-end developer & consultant
+
+    - [https://github.com/jiayihu](https://github.com/jiayihu)
+    - [https://twitter.com/jiayi_ghu](@jiayi_ghu)
+    - [jiayi.ghu@gmail.com](jiayi.ghu@gmail.com)
+  </script>
+</section>
+
+<section data-background-image="images/spoilers.gif"></section>
+
+<section data-markdown data-notes="I devtools forniscono il contesto in maniera chiara.
+Il console logging è un'arte">
+  <script type="text/template">
+    ## Spoilers
+
+    1. Redux DevTools features and how
+    2. Debugging source code
+    3. Production debugging
+  </script>
+</section>
+
+<section>
+  <h2>Back to the origins...</h2>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/xsSnOQynTHs" frameborder="0" allowfullscreen></iframe>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## First-class DX
+
+    - Born with DevTools
+    - Time travel
+    - Hot Reloading
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Redux principles
+
+    1. Single state store
+    2. State is *read-only*
+    3. Changes are pure and deterministic
+  </script>
+</section>
+
+<section class="full-height" style="padding: 0;">
+  <div style="display: flex; height: 700px; width: 100%;">
+    <div style="align-items: center; display: flex; flex-grow: 1; justify-content: center; background-color: #592d89;">
+      <h3 class="white">Constraints</h3>
+    </div>
+    <div style="align-items: center; display: flex; flex-grow: 1; justify-content: center;">
+      <h3 class="">Features</h3>
+    </div>
+  </div>
+</section>
+
+<section data-background-image="images/devtools.png">
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Developer Tools
+
+    1. Visual rappresentation of the state
+    2. Actions history
+    3. Many other powerful features
+  </script>
+</section>
+
+<section data-markdown data-notes="Si vede visivamente la realtà, non un'aspettativa">
+  <script type="text/template">
+    ## Single state tree
+
+    1. More awareness
+    2. Catch errors/inconsistencies
+    3. Allows diffing (via immutability)
+  </script>
+</section>
+
+<section data-markdown data-notes="dispatch action in devtools
+E' come avere una god-view">
+  <script type="text/template">
+    ## Replayable actions
+
+    1. Declarative and explicit
+    2. Deterministic
+    3. Catch errors in sequences
+  </script>
+</section>
+
+<section data-markdown data-notes="Pregi di un DFA, in una demo con clienti">
+  <script type="text/template">
+    ### Deterministic finite automaton (DFA)
+
+    Formal definition: *(**Q**, **Σ**, **δ**, q0, F)*
+
+    ![DFA](images/automaton.png) <!-- .element class="default-img" -->
+  </script>
+</section>
+
+<section data-markdown data-notes="Utopia: app as DFA. Time travelling">
+  <script type="text/template">
+    ## Redux as DFA
+
+    - Finite number of **states**
+    - **actions** as *inputs*
+    - **reducer** as *transition function δ*
+    - Resource: [React UI as Finite Automaton](https://youtu.be/VU1NKX6Qkxc)
+  </script>
+</section>
+
+<section data-markdown data-notes="Mostrare le sequenze in demo">
+  <script type="text/template">
+    ## Redux as DFA
+
+    ![DFA](images/dfa.svg) <!-- .element class="default-img" style="width: 100%;" -->
+  </script>
+</section>
+
+<section data-markdown data-notes="Rehydratation">
+  <script type="text/template">
+    ## Redux as Git
+
+    - Commit
+    - Revert
+    - Fork
+    - Clone
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Common workflow
+
+    ![HMR](images/hmr-reload.png)
+
+    1. Make the change in your code
+    2. Refresh the page in your browser
+    3. Re-add the data and push all of the same buttons
+
+    [Source](https://code-cartoons.com/hot-reloading-and-time-travel-debugging-what-are-they-3c8ed2812f35) <!-- .element class="source" -->
+  </script>
+</section>
+
+<section data-markdown data-notes="Se questa vi sembra magia...">
+  <script type="text/template">
+    ## Hot reloading
+
+    ![HMR](images/hmr.png)
+
+    - React hot reloading
+    - Reducers hot reloading
+  </script>
+</section>
+
+<section data-markdown data-notes="">
+  <script type="text/template">
+    ## New workflow
+
+    1. Pause 
+    2. Lock
+    3. Iterate:👨🏻‍💻
+    4. Start & Unlock
+    5. Next feature 💁🏻‍♂️
+  </script>
+</section>
+
+<section data-background-image="images/wow.gif">
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Remote debugging 🛰
+
+    ```javascript
+    // index.js
+    import { composeWithDevTools } from 'remote-redux-devtools';
+
+    const store = createStore(
+      reducer,
+      composeWithDevTools({ realtime: true, port: 8000 })()
+    );
+    ```
+
+    ```json
+    // package.json
+    "remotedev": "remotedev --hostname=localhost --port=8000"
+    ```
+
+    ```
+    # CLI
+    npm run remotedev
+    ```
+  </script>
+</section>
+
+<section data-markdown data-background-color="#592d89">
+  <script type="text/template">
+    ## Diving into the code <!-- .element class="white"-->
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ### How Redux helps debugging
+
+    1. Separations of concerns
+    2. Immutability guarantees pridictability
+    3. Unidirectional flow
+  </script>
+</section>
+
+<section data-markdown data-notes="Dispatch is synchronous">
+  <script type="text/template">
+    ## Redux flow
+
+    ![Redux flow](images/redux-flow.gif)
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ### Redux helps reasoning
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ### What if everyone used Redux
+
+    ![Futuristic](images/futuristic.gif) <!-- .element class="default-img" style="width: 100%" -->
+  </script>
+</section>
+
+<section data-markdown data-background-color="#592d89">
+  <script type="text/template">
+    ## Production debugging <!-- .element class="white"-->
+  </script>
+</section>
+
+<section data-markdown data-notes="Solitamente vengono riportati solo gli errori e loc">
+  <script type="text/template">
+    ## w/o Redux
+
+    - No devtools
+    - Unreliable users
+    - No context
+  </script>
+</section>
+
+<section data-background-image="images/gionnino.gif"></section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## w/ Redux
+
+    1. Code error & stack trace
+    2. N-th last actions
+    3. States => rehydratation
+    4. Remote devtools
+  </script>
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    ![Sentry](images/sentry.svg) <!-- .element class="default-img" style="width: 20%;" -->
+
+    ## Redux & sentry
+
+    ```javascript
+    import {applyMiddleware, createStore} from 'redux';
+    import RavenMiddleware from 'redux-raven-middleware';
+    
+    const createStoreWithMiddleware = applyMiddleware(
+      RavenMiddleware('my-sentry-dsn')
+    )(createStore);
+    ```
+  </script>
+</section>
+
+<!--
+  Redux logging in production: https://blog.logrocket.com/redux-logging-in-production-3b2a4816b713
+  Maximize debuggability in Redux: https://blog.logrocket.com/maximizing-debuggability-with-redux-79b2ad07b64c
+-->
+<section data-markdown data-notes="Local vs global state">
+  <script type="text/template">
+    ## Moar information
+
+    1. Keep important state in Redux
+    2. Dispatch actions for network requests, successes and failures
+    3. Use Redux to manage async results
+      - WebSockets
+      - LocalStorage
+      - *react-router-redux*
+  </script>
+</section>
+
+<section data-background-image="images/tyrion.gif"></section>
+
+<section data-background-image="./images/thanks.gif">
+</section>
+
+<section data-markdown>
+  <script type="text/template">
+    [goo.gl/qY1iJb](https://goo.gl/qY1iJb)
+  </script>
+</section>
+
+  </div>
+</div>
+
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script>
+    // More info about config & dependencies:
+    // - https://github.com/hakimel/reveal.js#configuration
+    // - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+      history: true,
+      keyboard: {
+        40: 'prev',
+        38: 'next'
+      },
+      dependencies: [
+        { src: 'plugin/markdown/marked.js' },
+        { src: 'plugin/markdown/markdown.js' },
+        { src: 'plugin/notes/notes.js', async: true },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+      ],
+      slideNumber: true
+    });
+    </script>
+  </body>
+</html>

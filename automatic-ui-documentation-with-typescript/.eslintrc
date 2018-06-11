@@ -1,0 +1,35 @@
+{
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+
+  "rules": {
+    "class-methods-use-this": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 0,
+    "import/prefer-default-export": 0,
+    "jsx-a11y/img-has-alt": 0,
+    "max-len": [2, {"code": 120, "tabWidth": 2, "ignoreUrls": true}],
+    "no-alert": 0,
+    "no-console": 0,
+    "no-underscore-dangle": 0,
+    "no-param-reassign": 0,
+    "prefer-arrow-callback": [2, {
+      "allowNamedFunctions": true
+    }],
+    "react/prefer-stateless-function": 0
+  },
+
+  "env": {
+    "browser": true,
+    "mocha": true
+  },
+
+  "plugins": [
+    "react"
+  ],
+
+  "extends": ["eslint:recommended", "airbnb"]
+}

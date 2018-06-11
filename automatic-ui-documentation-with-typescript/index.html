@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width initial-scale=1 user-scalable=no" />
+  <title>Angular Day</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="static/prism-theme.css">
+</head>
+<body>
+  <div id="root"></div>
+  <script src="static/prism.js" type="text/javascript"></script>
+  <script src="static/prism-jsx.min.js" type="text/javascript"></script>
+  <script src="static/prism-typescript.min.js" type="text/javascript"></script>
+  <script src="static/prism-json.min.js" type="text/javascript"></script>
+  <script src="dist/bundle.js"></script>
+
+  <style>
+    code[data-radium] { font-size: 1.5em !important; }
+
+    pre.language-json,
+    pre.language-markdown {
+      overflow: auto;
+      max-height: 80vh;
+    }
+
+    /* Spectacle code slide */
+    code[data-radium] div[data-radium] { font-size: 1.5rem !important; }
+    code[data-radium] div[data-radium][style*="0.2"] { opacity: 0.1 !important; }
+
+    .spectacle-content > h1 {
+      border-color: #cc0023 !important;
+      color: #34495E !important;
+    }
+  </style>
+</body>
+</html>

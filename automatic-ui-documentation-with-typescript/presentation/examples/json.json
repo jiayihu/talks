@@ -1,0 +1,117 @@
+{
+  "AccordionComponent": {
+		"name": "AccordionComponent",
+		"selector": "my-accordion",
+		"properties": [
+			{
+				"name": "contentHeight$",
+				"comment": {
+					"shortText": "Observable of the height the content can have to be full height",
+					"text": ""
+				},
+				"type": "Observable<number>",
+				"isReferenceType": true
+			}
+		],
+		"inputs": [
+			{
+				"name": "activeIds",
+				"comment": {
+					"shortText": "An array or comma separated strings of panel identifiers that should be opened",
+					"text": ""
+				},
+				"type": "string | string[]",
+				"isReferenceType": false,
+				"defaultValue": " []"
+			},
+			{
+				"name": "closeOthers",
+				"comment": {
+					"shortText": " Whether the other panels should be closed when a panel is opened",
+					"text": ""
+				},
+				"type": "boolean",
+				"isReferenceType": false
+			},
+			{
+				"name": "type",
+				"comment": {
+					"shortText": " Accordion's types of panels to be applied globally.",
+					"text": ""
+				},
+				"type": "\"primary\" | \"success\" | \"info\" | \"warning\" | \"danger\"",
+				"isReferenceType": false
+			}
+		],
+		"outputs": [
+			{
+				"name": "onPanelChange",
+				"comment": {
+					"shortText": "A panel change event fired right before the panel toggle happens.",
+					"text": ""
+				},
+				"type": "EventEmitter<IPanelChangeEvent>",
+				"isReferenceType": true,
+				"defaultValue": " new EventEmitter<IPanelChangeEvent>()"
+			}
+		],
+		"methods": [
+			{
+				"name": "toggle",
+				"comment": {
+					"shortText": "Programmatically toggle a panel with a given id.",
+					"text": ""
+				},
+				"parameters": [
+					{
+						"name": "panelId",
+						"type": "string",
+						"isReferenceType": false
+					}
+				],
+				"returnType": "void",
+				"isReferenceType": false
+			}
+		],
+		"types": [
+			{
+				"name": "IPanelChangeEvent",
+				"kind": "Interface",
+				"comment": {
+					"shortText": "The payload of the change event fired right before toggling an accordion panel",
+					"text": ""
+				},
+				"properties": [
+					{
+						"name": "nextState",
+						"comment": {
+							"shortText": "Whether the panel will be opened (true) or closed (false)",
+							"text": ""
+						},
+						"type": "boolean",
+						"isReferenceType": false
+					},
+					{
+						"name": "panelId",
+						"comment": {
+							"shortText": "Id of the accordion panel that is toggled",
+							"text": ""
+						},
+						"type": "string",
+						"isReferenceType": false
+					},
+					{
+						"name": "preventDefault",
+						"comment": {
+							"shortText": "Function that will prevent panel toggling if called",
+							"text": ""
+						},
+						"type": "function",
+						"isReferenceType": false
+					}
+				],
+				"methods": []
+			}
+		]
+	}
+}

@@ -1,0 +1,67 @@
+/**
+ * Solarized Light theme for reveal.js.
+ * Author: Achim Staebler
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+$primary: #b7178c;
+$primary-light: #ec0c8e;
+$primary-dark: #592d89;
+
+// Override theme settings (see ../template/settings.scss)
+
+$mainColor: #333;
+$mainFont: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+$mainFontSize: 38px;
+$headingColor: $primary-dark;
+$headingFont: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+$headingTextShadow: none;
+$backgroundColor: #fff;
+$linkColor: $primary;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: $primary;
+
+// Background generator
+// @mixin bodyBackground() {
+// 	@include radial-gradient( rgba($base3,1), rgba(lighten($base3, 20%),1) );
+// }
+
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+
+.reveal strong {
+  color: $primary;
+}
+
+.white {
+  color: #fff !important;
+}
+
+.reveal h2 {
+  font-size: 2em;
+}
+
+.reveal section.full-height {
+  padding-top: 0 !important;
+}
+
+.reveal section img:not(.full-width) {
+  max-width: 65%;
+}
+
+.reveal .full-width {
+  width: 95%;
+}
+
+.reveal section ul ul li {
+  font-size: 0.75em;
+}
