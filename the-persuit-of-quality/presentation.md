@@ -1,7 +1,11 @@
-footer: The persuit of Quality
+footer: The pursuit of Quality
 slidenumbers: true
 
 # The persuit of Quality
+
+^
+- Qualità come testing: tutti interessati ma pochi lo fanno e bene
+- Come possiamo migliorarla?
 
 ---
 
@@ -13,7 +17,7 @@ slidenumbers: true
 
 The **pursuit** of Quality*
 
-^ L'importanza della verifica per la qualità
+^ Prima lezione: l'importanza della verifica per la qualità
 
 ---
 
@@ -42,7 +46,20 @@ Ha un significato relativo e ~~soggettivo~~.
 ^
 - ISO8601 vi fa venire brividi?
 - ISO9000/1: insieme di standard neutri per la qualità dei prodotti
+- ISO9001 compare anche nella pasta De Cecco
 - In relazione alla soddisfazione dei clienti, nessuna menzione al codice
+
+---
+
+L'assenza di qualità è un problema sia per voi che soprattutto per il cliente.
+# 💰
+
+---
+
+Possiamo
+
+1. ignorarla
+2. cercare di migliorarla
 
 ---
 
@@ -55,8 +72,13 @@ Ha un significato relativo e ~~soggettivo~~.
 
 ---
 
-> If you cannot measure it, you cannot improve it
+> "If you cannot measure it, you cannot improve it"
 - Deming
+
+^
+- Alla base del miglioramento continuo
+- Cruscotto macchina
+- Fondamentale cruscotto come in Redux devtools
 
 ---
 
@@ -119,14 +141,15 @@ Ricercare la qualità non deve essere arduo
 
 [.text: alignment(left)]
 
-- Linters e plugin editor/IDE: **TSLint/ESLint**
+1. Linters e plugin editor/IDE: **TSLint/ESLint**
+    - [tslint-microsoft](https://github.com/Microsoft/tslint-microsoft-contrib)
     - [typescript-eslint-parser](https://github.com/eslint/typescript-eslint-parser)
-- Git hooks: **husky** 🐕
-- CI: **Travis**, **CircleCI** 👮🏻‍♂️
-- ~~Quality Assurance~~
-- ~~Utenti~~
+2. Git hooks: **husky** 🐕
+3. CI: **Travis**, **CircleCI** 👮🏻‍♂️
+- ~~Quality Assurance/Utenti~~
 
 ^ 
+- tslint-microsoft: regole sicurezza (innerHTML)
 - Prevenire è meglio che curare
 - ESLint non dice solo dove sbagli, ma anche **perché** e **come** sistemare
 - Più si procede più è oneroso sistemare errori
@@ -195,7 +218,10 @@ Nel momento in cui rilasciamo il software, prima che gli utenti lo vedano, la no
 2. Integration tests
 3. e2e/system tests
 
-^ Il testing non è una metrica ma ci permette di averne
+^
+- Il testing non è una metrica ma ci permette di averne
+- Testing UI is hard, write unit tests for business logic, e2e tests for UI
+- Integration test: it renders
 
 ---
 
@@ -207,7 +233,9 @@ Nel momento in cui rilasciamo il software, prima che gli utenti lo vedano, la no
   
 [Testing Angular with Jest](https://www.xfive.co/blog/testing-angular-faster-jest/)
 
-^ Testano l'aspettativa dello sviluppatore
+^
+Testano l'aspettativa dello sviluppatore
+Non voglio convincere ad usare Jest per Angular, piuttosto a ragionare di più sul tool migliore
 
 ---
 
@@ -235,7 +263,9 @@ Nel momento in cui rilasciamo il software, prima che gli utenti lo vedano, la no
 
 [Cypress with Angular & Typescript](https://www.cypress.io/blog/2017/12/11/an-alternative-to-protractor-for-angular-projects/#Cypress-tests)
 
-^ Testano l'aspettativa dell'utente
+^
+- Testano l'aspettativa dell'utente
+- Cypress permette anche diff visuale e ti dice la causa possibile
 
 ---
 
@@ -249,13 +279,6 @@ Nel momento in cui rilasciamo il software, prima che gli utenti lo vedano, la no
 ![](assets/test-pyramid.png)
 
 ^ Avere un errore a livello e2e equivale anche a livello unit
-
----
-
-
-# QA
-
-Anche una buona Quality Assurance **non** rileva tutti gli errori e sempre
 
 ---
 
@@ -410,6 +433,10 @@ vs
 
 ---
 
+![inline](assets/puppeteer-devtools.png)
+
+---
+
 # Manutenibilità
 
 ^ Capacità nell’essere aperto alle modiﬁche nella maniera più intuitiva, immediata e sicura possibile
@@ -485,6 +512,12 @@ TS >= 2.9
 # Partial
 
 ![inline](assets/partial.png)
+
+---
+
+![inline 75%](assets/milanots.png)
+
+[MilanoTS](https://www.meetup.com/it-IT/MilanoTS/)
 
 ---
 
@@ -578,6 +611,10 @@ No ES6/TS support 🙃
 Alla PR ci si arriva già con alcune garanzie di correttezza, date dall'analisi statica e da linters/git hooks
 Un'opportunità per condividere ed imparare
 
+---
+
+![fit](assets/wtf.png)
+
 --- 
 
 # 2. CI
@@ -625,13 +662,29 @@ Un'opportunità per condividere ed imparare
 
 ---
 
+![](assets/shit.gif)
+
+---
+
 # La qualità deve essere premiata
+
+![inline](assets/bundlesize.png)
 
 ---
 
 # Basta incentivare i comportamenti errati
 
 ![right](https://youtu.be/Nq6ZqgozPF8)
+
+---
+
+Dove trovare la qualità:
+
+# Open Source Community
+
+^
+- Molti progetti come React, Angular
+- Un esempio di perché i peccati debbano essere pubblici
 
 ---
 
@@ -668,6 +721,16 @@ Front-end developer & consultant
 - [https://github.com/jiayihu](https://github.com/jiayihu)
 - [https://twitter.com/jiayi_ghu](@jiayi_ghu)
 - [jiayi.ghu@gmail.com](jiayi.ghu@gmail.com)
+
+---
+
+# Slides
+
+[github.com/jiayihu/talks](https://github.com/jiayihu/talks)
+
+^ 
+- Tanti tools suggeriti, trovate tutto nelle slides
+- Potete usare le issues per fare domande
 
 ---
 
