@@ -343,6 +343,7 @@ vs
 - Complessità ciclomatica
 - Indice Lighthouse
 - Dimensione bundle
+- [Puppeteer Devtools](https://developers.google.com/web/updates/2018/01/devtools-without-devtools)
 
 ---
 
@@ -396,6 +397,16 @@ vs
 [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
 
 ![inline](assets/webpack-bundle-analyzer.gif)
+
+---
+
+[.footer: Efficienza]
+
+# Puppeteer Devtools
+
+![inline](assets/puppeteer.png)
+
+[DevTools Protocol - Memory](https://chromedevtools.github.io/devtools-protocol/tot/Memory)
 
 ---
 
@@ -528,6 +539,7 @@ No ES6/TS support 🙃
 - **BrowserStack**
 - **Sauce Labs**
 - [eslint-plugin-compat](https://github.com/amilajack/eslint-plugin-compat)
+- [Puppeteer - Page emulation](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageemulateoptions)
 
 ---
 
