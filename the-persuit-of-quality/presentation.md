@@ -11,6 +11,12 @@ slidenumbers: true
 
 ---
 
+The **pursuit** of Quality*
+
+^ L'importanza della verifica per la qualità
+
+---
+
 # Meaning of "quality"
 
 Ha un significato relativo e ~~soggettivo~~.
@@ -328,6 +334,8 @@ vs
 
 # Efficienza
 
+^ Capacità di portare a termine i compiti usando un quantitativo di risorse temporali e di memoria adeguate
+
 ---
 
 # Efficienza
@@ -392,6 +400,8 @@ vs
 ---
 
 # Manutenibilità
+
+^ Capacità nell’essere aperto alle modiﬁche nella maniera più intuitiva, immediata e sicura possibile
 
 ---
 
@@ -509,6 +519,8 @@ No ES6/TS support 🙃
 
 # Portabilità
 
+^ Capacità di essere eseguito su ambienti/dispositivi diversi
+
 ---
 
 # Portabilità
@@ -566,7 +578,7 @@ Un'opportunità per condividere ed imparare
 
 1. L'applicazione deve compilare
 2. Tutti i test devono passare
-3. Tutte le metriche devono passare, ad *bundlesize*
+3. Tutte le metriche devono passare, ad esempio *bundlesize*
 
 ---
 
@@ -592,8 +604,6 @@ Un'opportunità per condividere ed imparare
 - Analisi delle soluzioni adottate
 - Fare una **checklist**
 
-^ Fare una checklist
-
 --- 
 
 # I peccati devono essere pubblici
@@ -615,9 +625,11 @@ Un'opportunità per condividere ed imparare
 
 # Conclusioni
 
-- La qualità è uno sforzo continuo
+- La qualità è uno sforzo continuo e collettivo
 - Cultura della Qualità
 - Community
+
+^ Regola del boy-scout
 
 ---
 
