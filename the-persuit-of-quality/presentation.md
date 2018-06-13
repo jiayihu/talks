@@ -118,7 +118,7 @@ Ricercare la qualità non deve essere arduo
 - Git hooks: **husky** 🐕
 - CI: **Travis**, **CircleCI** 👮🏻‍♂️
 - ~~Quality Assurance~~
-- ~~Client~~
+- ~~Utenti~~
 
 ^ 
 - Prevenire è meglio che curare
@@ -395,16 +395,6 @@ vs
 
 ---
 
-# Manutenibilità
-
-- Complessità ciclomatica
-- Profondità di annidamento
-- Numero di parametri 
-- Linee di codice per file
-- Statement per funzione
-
----
-
 [.footer: Manutenibilità]
 
 # TypeScript
@@ -474,6 +464,16 @@ TS >= 2.9
 # Partial
 
 ![inline](assets/partial.png)
+
+---
+
+# Manutenibilità
+
+- Complessità ciclomatica
+- Profondità di annidamento
+- Numero di parametri 
+- Linee di codice per file
+- Statement per funzione
 
 --- 
 
