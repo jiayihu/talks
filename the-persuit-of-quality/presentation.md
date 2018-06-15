@@ -51,7 +51,7 @@ Ha un significato relativo e ~~soggettivo~~.
 
 ---
 
-L'assenza di qualità è un problema sia per voi che soprattutto per il cliente.
+L'assenza di qualità è un problema sia per voi che per il cliente (soprattutto).
 # 💰
 
 ---
@@ -77,6 +77,7 @@ Possiamo
 
 ^
 - Alla base del miglioramento continuo
+- Gli sportivi
 - Cruscotto macchina
 - Fondamentale cruscotto come in Redux devtools
 
@@ -515,12 +516,6 @@ TS >= 2.9
 
 ---
 
-![inline 75%](assets/milanots.png)
-
-[MilanoTS](https://www.meetup.com/it-IT/MilanoTS/)
-
----
-
 # Manutenibilità
 
 - Complessità ciclomatica
@@ -611,10 +606,6 @@ No ES6/TS support 🙃
 Alla PR ci si arriva già con alcune garanzie di correttezza, date dall'analisi statica e da linters/git hooks
 Un'opportunità per condividere ed imparare
 
----
-
-![fit](assets/wtf.png)
-
 --- 
 
 # 2. CI
@@ -652,6 +643,10 @@ Un'opportunità per condividere ed imparare
     - [Palantir - Code review best practises](https://medium.com/palantir/code-review-best-practices-19e02780015f)
 - Analisi delle soluzioni adottate
 - Fare una **checklist**
+
+---
+
+![fit](assets/wtf.png)
 
 --- 
 
