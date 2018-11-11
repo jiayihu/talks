@@ -56,6 +56,9 @@ slidecount: true
 ```
 [1 2 3 4]
 
+^ Shared readily between threads
+More performant than locks to read shared memory
+
 ---
 
 ## Persistent data structures
@@ -83,18 +86,6 @@ slidecount: true
 ```
 
 ![inline 125%](list-1.gif)
-
----
-
-## Persistent data structures
-
-![inline 125%](list-2.gif)
-
----
-
-## Persistent data structures
-
-![inline 125%](list-3.gif)
 
 ---
 
@@ -166,6 +157,35 @@ slidecount: true
 
 ---
 
+# Agents
+
+```clojure
+(ns clojure-noob.agents)
+
+(def counter (agent 0))
+
+(send counter (fn [c]
+  (Thread/sleep 1000)
+  (+ 10 c)))
+
+(println @counter)
+```
+
+=> 0
+
+---
+
+# Agents
+
+- Like Atoms, but modified **asynchronously** by invoking a function, called **action**, in another thread
+- Actions are queued up so that only one action at a time will be run per Agent
+- Sending an action is not blocking
+
+^ Async as opposed to sync atoms
+^ Indipendent as opposed to refs
+
+---
+
 # Refs
 
 ```clojure
@@ -190,26 +210,40 @@ slidecount: true
 
 ---
 
-## Transaction
+# Software transactional memory
 
 - **atomic**: all refs are updated or none of them are
 - **consistent**: the refs always appear to have valid states
-- **isolated**: transactions behave as if they executed serially
+- **isolated**: changes are not visible outside the transaction until it commits
 
 **ACI** D
 
 ^ Non rischia deadlock rispetto a Java synchronized
-compare-and-set
 
 ---
 
 # Software transactional memory
 
-Bla bla bla.
+- Operates on a consistent snapshot of the memory
+- Any transaction is re-run if its memory has been modified before being committed
+- **Optimistic** approach
+- Implementation can guarantee that **deadlock never occurs**
+- **Composable**
+
+---
+
+# Software transactional memory
+
+- Potential for large number of retries
+- Overhead imposed by transaction bookkeeping
+- No side-effects
+- Work best in languages which distinguish mutable and immutable data (Clojure/Haskell)
 
 ---
 
 # Channels
+
+### clojure.core.async
 
 ---
 
@@ -289,7 +323,7 @@ Invece di condividere stato, si usano channels
 
 ---
 
-# Guarded-commands
+# alts!
 
 ```clojure
 (defn multiplexing
@@ -317,7 +351,7 @@ Invece di condividere stato, si usano channels
 
 ---
 
-# Guard conditions
+# Guarded-commands
 
 ```clojure
 (alt!
@@ -325,6 +359,15 @@ Invece di condividere stato, si usano channels
   timeout-ch "Timeout"
   :default 42)
 ```
+
+---
+
+# Conclusions
+
+- Immutable data
+- Explicit variable shared state with atomic updates
+- Composable transactions
+- Coordination with channels
 
 ---
 
@@ -337,17 +380,18 @@ Invece di condividere stato, si usano channels
 
 ## References I
 
+- [Source code of examples](https://github.com/jiayihu/lab/tree/master/clojure-noob)
 - [Clojure for the brave and true](https://www.braveclojure.com/)
 - [Persistent data structures](https://en.wikipedia.org/wiki/Persistent_data_structure)
 - [Identity and State](https://clojure.org/about/state)
 - [Clojure dosync vs Java synchronized](https://stackoverflow.com/questions/3583513/clojure-stm-dosync-x-java-synchronize-block)
 - [Mark Volkmann's Software Transactional Memory (STM)](http://java.ociweb.com/mark/stm/)
-- [Concurrency via Software Transactional Memory](http://berb.github.io/diploma-thesis/community/053_stm.html)
 
 ---
 
-## References II
+## References III
 
+- [Concurrency via Software Transactional Memory](http://berb.github.io/diploma-thesis/community/053_stm.html)
 - [Clojure Overview - Concurrent Programming](https://clojure.org/about/concurrent_programming)
 - [Clojure core.async - Rich Hickey](https://www.infoq.com/presentations/clojure-core-async)
 - [Go Concurrency Patterns - Rob Pike](https://www.youtube.com/watch?v=f6kdp27TYZs)
