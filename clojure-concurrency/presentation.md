@@ -11,7 +11,7 @@ slidecount: true
 - A dialect of Lisp and a functional language
 - Uses immutable **persistent data structures**
 - Offers a **Software Transactional Memory** system and a reactive **Agent** system
-- Implements Hoare's **CSP** and Dijkstra's **Guarded Commands**
+- Concurrency based on Hoare's **CSP** and Dijkstra's **Guarded Commands**
 
 ---
 
@@ -351,7 +351,7 @@ Invece di condividere stato, si usano channels
 
 ---
 
-# Guarded-commands
+# alt!
 
 ```clojure
 (alt!
