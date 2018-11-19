@@ -89,6 +89,44 @@ HTML
 
 ---
 
+[postcss-css-variables](https://github.com/MadLittleMods/postcss-css-variables)
+[postcss-custom-properties](https://github.com/postcss/postcss-custom-properties)
+
+```css
+:root {
+  --color: red;
+}
+
+h1 {
+  color: var(--color);
+}
+
+/* becomes */
+
+:root {
+  --color: red;
+}
+
+h1 {
+  color: red;
+  color: var(--color);
+}
+```
+
+^ Treats custom properties much like preprocessor variables
+Can use only :root
+Aims to provide a future-proof way of using a limited subset
+
+---
+
+# Stripping custom properties
+
+If you can preprocess custom properties and get what you expect, stick with preprocessor variables.
+
+- [postcss-simple-vars](https://github.com/postcss/postcss-simple-vars)
+
+---
+
 # Interoperability
 
 - Sass/Less
@@ -126,8 +164,8 @@ Values can be any valid CSS value: numbers, strings, lengths, colors, etc.
   --message-external-link: "externer Link";
 }
 
-:root:lang(es) {
-  --meesage-external-link: "Link externo";
+:root:lang(it) {
+  --message-external-link: "Link esterno";
 }
 
 a[href^="http"]::after {content: " (" var(--external-link) ")"}
@@ -155,8 +193,11 @@ a[href^="http"]::after {content: " (" var(--external-link) ")"}
 
 # Operations
 
+[.code-highlight: 4, 8]
+
 ```css
 :root {
+  --columns: 12;
   --gutter: 16px;
   --margin: (var(--gutter) * 2)
 }
@@ -183,6 +224,8 @@ a[href^="http"]::after {content: " (" var(--external-link) ")"}
 }
 ```
 
+^ CSS4 color functions
+
 ---
 
 # Operations
@@ -194,9 +237,14 @@ a[href^="http"]::after {content: " (" var(--external-link) ")"}
 }
 
 .c-box {
-  transition: all var(--animation-duration-medium) var(--easing-standard);
+  transition:
+              all
+              var(--animation-duration-medium)
+              var(--easing-standard);
 }
 ```
+
+[Codepen](https://codepen.io/g12n/pen/ZLYqyr)
 
 ---
 
@@ -222,7 +270,10 @@ const setDocumentVariable = (propertyName, value) => {
 
 ---
 
-# Mettere demo figa con JS
+# Codepen
+
+https://codepen.io/kylewetton/pen/RqoYPg
+https://codepen.io/tutsplus/pen/MmzNNQ
 
 ---
 
@@ -372,22 +423,6 @@ Error-prone, difficult to undo/override
 
 ---
 
-# Reset component
-
-```css
-/* Best to avoid... */
-.header .promo .c-button {}
-
-/* ✌️ */
-.c-promo-button {
-  --btn-bg-color: initial;
-  --btn-primary-color: initial;
-  --btn-font-size: initial;
-}
-```
-
----
-
 # Component styling API [^3]
 
 API: Application programming interface [^4]
@@ -406,15 +441,23 @@ API: Application programming interface [^4]
 
 ---
 
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
 ![fit](assets/bbc.png)
 
 ---
+
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
 
 ![fit](assets/bbc1.png)
 
 ---
 
-# Theming
+# Variant Theming
 
 ```css
 /* Navigation.css */
@@ -436,7 +479,7 @@ API: Application programming interface [^4]
 
 ---
 
-# Theming
+# Static Theming
 
 ```css
 /* settings.css */
@@ -469,7 +512,7 @@ API: Application programming interface [^4]
 
 # User theme
 
-````css
+```css
 :root {
   --user-color: #01579B;
 }
@@ -477,6 +520,93 @@ API: Application programming interface [^4]
 .u-textUserColor,
 .u-borderUserColor {
   color: var(--user-color) !important;
+}
+```
+
+---
+
+# Theming with JS
+
+```js
+class App extends Component {
+  constructor(props) {
+    super(props);
+    const theme = {
+      '--main-color': '#1b70de',
+      '--bg-color': '#FFF',
+      '--text-color': '#000',
+      '--button-color': 'rgba(0, 0, 0, 0.8)',
+      '--header-color': '#424242',
+    };
+    this.state = { theme };
+  }
+
+  render() {
+    return (
+      <div>
+        <RootCSSVariables variables={this.state.theme} />
+        {...}
+      </div>
+    );
+  }
+}
+```
+
+---
+
+# Theming with JS
+
+```js
+class RootCSSVariables extends Component {
+  componentDidMount() {  
+    this.updateCSSVariables(this.props.variables);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.variables !== prevProps.variables) {     
+      this.updateCSSVariables(this.props.variables);
+    }
+  }
+
+  updateCSSVariables(variables) {   
+    Object.keys(variables).forEach((key) => {
+      const value = variables[key]
+      document.documentElement.style.setProperty(key, value));
+    });
+  }
+
+  render() { return this.props.children }
+}
+```
+
+---
+
+# Theming with Sass
+
+```css
+/* Navigation.css */
+:host {
+  --navigation-bg: $primary;
+}
+
+.c-navigation {
+  background-color: var(--navigation-bg, $primary);
+}
+```
+
+---
+
+# Theming with Sass
+
+```css
+/* Navigation.css */
+:host {
+  --navigation-bg: crimson;
+}
+
+.c-navigation {
+  background-color: crimson;
+  background-color: var(--navigation-bg, crimson);
 }
 ```
 
@@ -508,18 +638,118 @@ API: Application programming interface [^4]
 
 ---
 
-# Theming with Sass
+# Recommendation
+
+Use preprocessor for global static variables,
+CSS custom properties for component styling API and theming.
+
+^ Custom properties make sense when we have CSS properties that change relative to a condition in the DOM — especially a dynamic condition such as :focus, :hover, media queries or with JavaScript
+
+---
+
+# Shadow DOM
+
+- Part of Web Components
+- Used by native DOM elements
+- Similar to `iframe`
+
+---
+
+[.background-color: #FFFFFF]
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
+![fit](assets/shadow-dom.png)
+
+---
+
+- A boundary between the developer and the browser implementation
+
+```html
+<input id="foo" type="range">
+```
+
+- <video>, <select> etc.
+
+---
+
+```js
+const hostEl = document.querySelector('.host');
+
+const shadowRoot = hostEl.attachShadow({ mode: 'open' });
+shadowRoot.innerHTML = `
+  <style>
+    p { 
+      color: red;
+    }
+  </style>
+
+  <p>Element with Shadow DOM</p>
+`;
+```
+
+[Codepen](https://codepen.io/jiayihu/pen/vQWyGB?editors=1111)
+
+^ You create a scoped DOM tree that's attached to the element, but separate from its actual children
+
+---
+
+# Encapsulation
+
+> Encapsulation is used to hide the values or state of a structured data object inside a class, preventing unauthorized parties' direct access to them.
+
+> Publicly accessible methods are generally provided in the class.
+
+---
+
+# Encapsulation
+
+- Isolated DOM
+- Re-targeted events
+- Scoped CSS
+- Simplify CSS selectors
+
+^ Isolated DOM: A component's DOM is self-contained (e.g. document.querySelector() won't return nodes in the component's shadow DOM).
+Scoped CSS: CSS defined inside shadow DOM is scoped to it. Style rules don't leak out and page styles don't bleed in.
+Simplifies CSS - Scoped DOM means you can use simple CSS selectors, more generic id/class names, and not worry about naming conflicts.
+
+---
+
+# New selectors
 
 ```css
-/* Navigation.css */
 :host {
-  --navigation-bg: var($primary)
+  --navigation-bg: var(--primary);
+
+  all: initial;
 }
 
-.c-navigation {
-  background-color: var(--navigation-bg, $primary);
+:host([disabled]) {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+:host-context(.dark-theme) {
+  background-color: black;
 }
 ```
+
+^ Rules in the parent page have higher specificity than :host
+
+---
+
+# CSS Containment
+
+```css
+:host {
+  contain: none | strict | content | [ size || layout || style || paint ];
+}
+```
+
+---
+
+With Custom Properties?
 
 ---
 
@@ -567,3 +797,25 @@ With [postcss-import](https://github.com/postcss/postcss-import)
 No runtime cost for
   - dead-code elimination
   - minification
+
+--- 
+
+# Always bet on standards
+
+^ CSS variables can be introduced in existing Sass codebase
+
+---
+
+One last slide...
+
+---
+
+# Jiayi Hu
+
+## [dʒʌɪ]
+
+Front-end developer
+
+- jiayi.ghu@gmail.com
+- Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
+- GitHub: [jiayihu](https://github.com/jiayihu/)
