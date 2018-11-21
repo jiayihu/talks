@@ -1,8 +1,10 @@
-footer: CSS Renaissance
+footer: CSS Renaissance - Milano Frontend
 slidenumbers: true
 slidecount: true
 
 # CSS Renaissance
+
+![](assets/renaissance.jpg)
 
 ---
 
@@ -16,11 +18,11 @@ slidecount: true
 
 # Custom Properties
 
-**Runtime** CSS variables
+Runtime CSS *variables*
 
 Or
 
-**Inherited user-defined** properties
+Inherited user-defined *properties*
 
 --- 
 
@@ -60,26 +62,24 @@ Or
 
 ---
 
-# Inherited user-definied properties [^1]
-
-CSS
+# Inherited user-definied properties [^ref]
 
 ```css
+/* CSS */
 div > p { --primary: crimson; }
 p { --primary: aqua; }
 
-.c-block { background-color: var(--primary) }
+.c-block { background-color: var(--primary); }
 ```
 
-HTML
-
 ```html
+<!-- HTML -->
 <div>
   <p class="c-block"></p>
 </div>
 ```
 
-[^1]: [glazman: CSS Variables, why we drop the $foo notation](http://www.glazman.org/weblog/dotclear/index.php?post/2012/08/17/CSS-Variables%2C-why-we-drop-the-%24foo-notation)
+[^ref]: [glazman: CSS Variables, why we drop the $foo notation](http://www.glazman.org/weblog/dotclear/index.php?post/2012/08/17/CSS-Variables%2C-why-we-drop-the-%24foo-notation)
 
 ---
 
@@ -119,6 +119,92 @@ Aims to provide a future-proof way of using a limited subset
 
 ---
 
+# Comparison
+
+```css
+:root { --backgroundColor: red; }
+
+.header { background-color: var(--backgroundColor, white); }
+
+.header:hover { --backgroundColor: orange; }
+
+.header.is-about-page { --backgroundColor: yellow; }
+```
+
+---
+
+# postcss-custom-properties
+
+```css
+:root { --backgroundColor: red; }
+
+.header {
+  background-color: red;
+  background-color: var(--backgroundColor, white);
+}
+
+.header:hover { --backgroundColor: orange; }
+
+.header.is-about-page { --backgroundColor: yellow; }
+```
+
+---
+
+# postcss-css-variables
+
+preserve: 'computed'
+
+```css
+:root { --backgroundColor: red; }
+
+.header { background-color: red; }
+
+.header:hover { background-color: orange; }
+
+.header:hover { --backgroundColor: orange; }
+
+.header.is-about-page { --backgroundColor: yellow; }
+```
+
+---
+
+```css
+:root { --width: 100px; }
+
+@media (max-width: 1000px) {
+	:root { --width: 200px; }
+}
+
+.box { width: var(--width); }
+```
+
+---
+
+```css
+:root {
+  --width: 100px;
+}
+
+@media (max-width: 1000px) {
+  :root {
+    --width: 200px;
+  }
+}
+
+.box {
+  width: 100px;
+}
+
+@media (max-width: 1000px) {
+  .box {
+    width: 200px;
+  }
+}
+
+```
+
+---
+
 # Stripping custom properties
 
 If you can preprocess custom properties and get what you expect, stick with preprocessor variables.
@@ -139,39 +225,44 @@ Sass files cannot be used without Sass
 
 ---
 
-
-# Valid values
-
 Values can be any valid CSS value: numbers, strings, lengths, colors, etc.
 
 ```css
+/* CSS */
 :root {
-  --foo: if(x < 5) this.width = 10;
+  --foo: console.log('Hello world');
 }
+```
+
+```js
+// JS
+const styles = window.getComputedStyle(document.documentElement);
+const value = styles.getPropertyValue('--foo');
+eval(value);
 ```
 
 ---
 
-# i18n [^0]
+# i18n [^1]
 
 ```css
 :root,
 :root:lang(en) {
-  --message-external-link: "external link";
+  --external-link: "external link";
 }
 
 :root:lang(de) {
-  --message-external-link: "externer Link";
+  --external-link: "externer Link";
 }
 
 :root:lang(it) {
-  --message-external-link: "Link esterno";
+  --external-link: "Link esterno";
 }
 
 a[href^="http"]::after {content: " (" var(--external-link) ")"}
 ```
 
-[^0]: [publishing-project.rivendellweb.net](https://publishing-project.rivendellweb.net/theming-the-web-with-css-custom-properties/)
+[^1]: [publishing-project.rivendellweb.net](https://publishing-project.rivendellweb.net/theming-the-web-with-css-custom-properties/)
 
 ---
 
@@ -219,7 +310,7 @@ a[href^="http"]::after {content: " (" var(--external-link) ")"}
   --primary: 98, 0, 238;
 }
 
-.c-box {
+.c-button:hover {
   background-color: rgba(var(--primary), var(--alpha-hover))
 }
 ```
@@ -258,7 +349,7 @@ Vanilla JS
 
 ```javascript
 const getVariable = (el, propertyName) => {
-  const styles = el.getComputedStyle();
+  const styles = window.getComputedStyle(el);
   
   return String(styles.getPropertyValue(propertyName)).trim();
 };
@@ -268,12 +359,29 @@ const setDocumentVariable = (propertyName, value) => {
 };
 ```
 
+^ Cannot get from el.style
+
+---
+
+![](assets/panda.png)
+
+---
+
+![](assets/panda.png)
+
+[Codepen](https://codepen.io/jiayihu/pen/YReYLY)
+
+---
+
+![](assets/alex.png)
+
 ---
 
 # Codepen
 
-https://codepen.io/kylewetton/pen/RqoYPg
-https://codepen.io/tutsplus/pen/MmzNNQ
+![](assets/alex.png)
+
+[Source](https://codepen.io/tutsplus/pen/MmzNNQ)
 
 ---
 
@@ -771,7 +879,7 @@ With Custom Properties?
 2. Dependencies  => **Shadow DOM**
 3. Dead code => **Shadow DOM**
 4. Minification => **Shadow DOM (?)**
-5. Sharing constants => **CSS variables**
+5. Sharing constants => **Custom Properties**
 6. Non-deterministic resolution => **Shadow DOM (?)**
 7. Breaking isolation => **Shadow DOM**
 
@@ -783,22 +891,295 @@ With [postcss-import](https://github.com/postcss/postcss-import)
 
 ```css
 @import "normalize";
-@import "local/foo.css";
+@import "local/button.css";
 
-.c-nav {
+.c-promo-button {
   background: rebeccapurple;
 }
 ```
 
 ---
 
-# vjeux CSS-in-JS
+# Dead-code elimination
+
+```css
+.c-promo-button {
+  background: rebeccapurple;
+}
+```
+
+---
+
+# Minification
+
+[CSS-Blocks](https://github.com/linkedin/css-blocks) => [OptiCSS](https://github.com/linkedin/opticss)
+
+```css
+.c-promo-button {
+  background: rebeccapurple;
+}
+
+/* into */
+
+.f {
+  background: rebeccapurple;
+}
+```
+
+^ No need to keep track of other components minification
+
+---
+
+# Static analysis
 
 No runtime cost for
   - dead-code elimination
   - minification
 
---- 
+---
+
+# Sharing constants
+
+```css
+.c-button {
+  padding: var(--button-padding);
+}
+```
+
+```js
+render() {
+  const buttonPadding = 10
+  return (
+    <button
+      className="c-button"
+      style={{ '--button-padding': buttonPadding }}
+    ></button>
+  )
+}
+```
+
+^ Example: autoresizing button
+
+---
+
+# CSS Houdini
+
+---
+
+# CSS Houdini
+
+- API to extend CSS itself
+- Hook into painting/layout rendering engine
+- In JS things move too fast, in CSS too slow
+
+---
+
+# CSS Polyfills [^6]
+
+- Polyfilling CSS is incredibly hard
+- CSSOM discards any CSS rule it doesn’t understand
+
+^  a polyfill is code that implements a feature on web browsers that do not support it
+
+[^6]: [smashingmagazine](https://www.smashingmagazine.com/2016/03/houdini-maybe-the-most-exciting-development-in-css-youve-never-heard-of/)
+
+---
+
+[.background-color: #FFFFFF]
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
+![fit](assets/03-rendering-process-opt.png)
+
+---
+
+[.background-color: #FFFFFF]
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
+![fit](assets/04-rendering-process-polyfilled-opt.png)
+
+---
+
+# Houdini
+
+- Normalized CSS
+- Performant CSS polyfills
+
+---
+
+[.background-color: #FFFFFF]
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
+![fit](assets/05-spec-coverage-opt.png)
+
+---
+
+# CSS Object Model (CSSOM)
+
+- Like DOM, but for CSS
+
+```html
+<style>
+  body { background-color: red; }
+</style>
+```
+
+```js
+const stylesheet = document.styleSheets[0];
+stylesheet.cssRules[0].style.backgroundColor = "blue";
+```
+
+---
+
+# CSS Object Model (CSSOM)
+
+```javascript
+const getVariable = (el, propertyName) => {
+  const styles = window.getComputedStyle(el);
+  
+  return String(styles.getPropertyValue(propertyName)).trim();
+};
+
+const setDocumentVariable = (propertyName, value) => {
+  document.documentElement.style.setProperty(propertyName, value);
+};
+```
+
+---
+
+# CSS Typed OM
+
+```js
+el.attributeStyleMap.set('padding', CSS.px(42));
+const padding = el.attributeStyleMap.get('padding');
+console.log(padding.value, padding.unit); // 42, 'px'
+
+el.attributeStyleMap.has('opacity') // false
+el.attributeStyleMap.delete('padding')
+el.attributeStyleMap.clear();
+```
+
+^ Instead of strings, values are exposed as JavaScript objects to facilitate manipulation.
+Map-like objects
+
+---
+
+[Is Houdini ready yet‽](https://ishoudinireadyyet.com/)
+
+---
+
+# Why CSS Typed OM
+
+- Fewer bugs
+- Math operations and conversions
+- Better performance (`requestAnimationFrame`)
+
+---
+
+# CSS Layout API
+
+- Custom layout logic
+
+```css
+body {
+  display: layout('masonry');
+}
+```
+
+---
+
+# CSS Layout API
+
+```js
+registerLayout('masonry', class {
+  static get inputProperties() {
+    return ['width', 'height']
+  }
+
+  static get childrenInputProperties() {
+    return ['x', 'y', 'position']
+  }
+
+  layout(children, constraintSpace, styleMap, breakToken) {
+    // Layout logic goes here.
+  }
+}
+```
+
+---
+
+# Worklets
+
+- Like Workers but for rendering
+- Indipendent from main thread
+
+```js
+if ('layoutWorklet' in CSS) {
+  CSS.layoutWorklet.addModule('masonry.js');
+}
+```
+
+---
+
+# CSS Paint API
+
+- Custom behaviour anywhere a CSS image is expected
+- `background-image`, `border-image`, `linear-gradient`
+
+```css
+.bubble {
+  --circle-color: blue;
+  background-image: url("circle.png");
+  background-image: paint('circle');
+}
+```
+
+---
+
+# CSS Paint API [^7]
+
+```js
+registerPaint('circle', class {
+  static get inputProperties() { return ['--circle-color']; }
+  
+  paint(ctx, geom, properties) {
+    const color = properties.get('--circle-color');
+    ctx.fillStyle = color;
+
+    const x = geom.width / 2;
+    const y = geom.height / 2;
+    const radius = Math.min(x, y);
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    ctx.fill();
+  }
+});
+```
+
+[^7]: [css-houdini-drafts: CSS Paint API Explained](https://github.com/w3c/css-houdini-drafts/blob/master/css-paint-api/EXPLAINER.md)
+
+---
+
+# Use cases
+
+- Lighter implementation (ripple)
+- Smaller size compared to images
+- Dynamic background
+- Polyfill for CSS features like _conic gradients_
+
+---
+
+https://github.com/GoogleChromeLabs/houdini-samples
+
+Demo figa
+
+---
 
 # Always bet on standards
 
