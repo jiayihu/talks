@@ -377,11 +377,9 @@ const setDocumentVariable = (propertyName, value) => {
 
 ---
 
-# Codepen
-
 ![](assets/alex.png)
 
-[Source](https://codepen.io/tutsplus/pen/MmzNNQ)
+[Codepen](https://codepen.io/tutsplus/pen/MmzNNQ)
 
 ---
 
@@ -446,19 +444,19 @@ $gutterLg: 3em;
 ```css
 :root { --gutter: 1.5em; }
 
+.o-container {
+  padding: var(--gutter);
+}
+
 @media (min-width: 30em) {
   :root { --gutter: 2em; }
 }
 @media (min-width: 48em) {
   :root { --gutter: 3em; }
 }
-
-.o-container {
-  padding: var(--gutter);
-}
 ```
 
-^ Media query breakpoints can also use CSS variables
+^ Like Excel cells
 
 ---
 
@@ -474,10 +472,10 @@ p { font-size: var(--base-font-size); }
 h1 { font-size: calc(var(--modular-scale) * 3 * var(--base-font-size)); }
 h2 { font-size: calc(var(--modular-scale) * 2 * var(--base-font-size)); }
 
-@media (min-width: 30em){
+@media (min-width: 30em) {
   :root { --modular-scale: 1.333 }
 }
-@media (min-width: 48em){
+@media (min-width: 48em) {
   :root { --modular-scale: 1.414 }
 }
 ```
@@ -514,10 +512,14 @@ Error-prone, difficult to undo/override
 
 ```css
 .c-button {
-  background-color: var(--btn-bg-color, #eee);
-  border: 2px solid var(--btn-primary-color, crimson);
-  color: var(--btn-primary-color, crimson);
-  font-size: var(--btn-font-size, 18px);
+  --btn-bg-color: #eee;
+  --btn-primary-color: crimson;
+  --btn-font-size: 18px;
+
+  background-color: var(--btn-bg-color);
+  border: 2px solid var(--btn-primary-color);
+  color: var(--btn-primary-color);
+  font-size: var(--btn-font-size);
 }
 
 .c-header-button {
@@ -567,6 +569,10 @@ API: Application programming interface [^4]
 
 # Variant Theming
 
+```html
+<nav class="c-navigation c-news-navigation"></nav>
+```
+
 ```css
 /* Navigation.css */
 :host {
@@ -574,7 +580,7 @@ API: Application programming interface [^4]
 }
 
 .c-navigation {
-  background-color: var(--navigation-bg, brown);
+  background-color: var(--navigation-bg);
 }
 ```
 
@@ -660,6 +666,9 @@ class App extends Component {
 }
 ```
 
+^ Components are written with custom properties without knowing about themes
+Also without style props or context
+
 ---
 
 # Theming with JS
@@ -722,13 +731,12 @@ class RootCSSVariables extends Component {
 
 # Runtime performance
 
-1. Start-up performance
-  - **3x slower**
-2. Style-recalculation
-  - avoid frequent :root changes
+1. Start-up performance: _3x slower_
+2. Style-recalculation: avoid frequent :root changes
 3. Setting with JS
-  - prefer `el.setProperty('--color', 'green')`
-  - `el.style = "color: green"`
+  - `el.setProperty('--color', 'green')` _4x slower_ than
+  - `el.setProperty('color', 'green')`
+4. _1.3x faster_ than inline styles
 
 ---
 
@@ -751,7 +759,19 @@ class RootCSSVariables extends Component {
 Use preprocessor for global static variables,
 CSS custom properties for component styling API and theming.
 
-^ Custom properties make sense when we have CSS properties that change relative to a condition in the DOM — especially a dynamic condition such as :focus, :hover, media queries or with JavaScript
+^ Custom properties make sense with CSS properties that change relative to a condition in the DOM — especially a dynamic condition such as :focus, :hover, media queries or with JavaScript
+
+---
+
+# About Custom Properties
+
+It's like when OOP was first invented.
+
+^ Programming in CSS is like writing an app using only one JS file
+
+---
+
+# Shadow DOM
 
 ---
 
@@ -857,7 +877,15 @@ Simplifies CSS - Scoped DOM means you can use simple CSS selectors, more generic
 
 ---
 
-With Custom Properties?
+[.header: #6C8EBF]
+[.background-color: #FFFFFF]
+[.hide-footer]
+[.slidenumbers: false]
+[.slidecount: false]
+
+# With Custom Properties?
+
+![inline fit](assets/shadow-dom-1.png)
 
 ---
 
@@ -1069,10 +1097,6 @@ Map-like objects
 
 ---
 
-[Is Houdini ready yet‽](https://ishoudinireadyyet.com/)
-
----
-
 # Why CSS Typed OM
 
 - Fewer bugs
@@ -1117,12 +1141,14 @@ registerLayout('masonry', class {
 
 - Like Workers but for rendering
 - Indipendent from main thread
+- No access to DOM, Network etc.
+- Lifetime is not defined
 
 ```js
 if ('layoutWorklet' in CSS) {
   CSS.layoutWorklet.addModule('masonry.js');
 }
-```
+```
 
 ---
 
@@ -1131,6 +1157,7 @@ if ('layoutWorklet' in CSS) {
 - Custom behaviour anywhere a CSS image is expected
 - `background-image`, `border-image`, `linear-gradient`
 
+
 ```css
 .bubble {
   --circle-color: blue;
@@ -1147,12 +1174,12 @@ if ('layoutWorklet' in CSS) {
 registerPaint('circle', class {
   static get inputProperties() { return ['--circle-color']; }
   
-  paint(ctx, geom, properties) {
+  paint(ctx, size, properties) {
     const color = properties.get('--circle-color');
     ctx.fillStyle = color;
 
-    const x = geom.width / 2;
-    const y = geom.height / 2;
+    const x = size.width / 2;
+    const y = size.height / 2;
     const radius = Math.min(x, y);
 
     ctx.beginPath();
@@ -1164,20 +1191,48 @@ registerPaint('circle', class {
 
 [^7]: [css-houdini-drafts: CSS Paint API Explained](https://github.com/w3c/css-houdini-drafts/blob/master/css-paint-api/EXPLAINER.md)
 
+^ ctx: CanvasRenderingContext2D
+style: computed Typed-OM style map of only listed inputProperties
+
+---
+
+# PaintRenderingContext2D
+
+- A subset of the CanvasRenderingContext2D API
+- No `CanvasImageData`, `CanvasText`
+- [spec](https://www.w3.org/TR/css-paint-api-1/#2d-rendering-context)
+
 ---
 
 # Use cases
 
-- Lighter implementation (ripple)
+- Lighter and more performant implementation (ripple)
 - Smaller size compared to images
 - Dynamic background
 - Polyfill for CSS features like _conic gradients_
 
 ---
 
-https://github.com/GoogleChromeLabs/houdini-samples
+# Demos
 
-Demo figa
+- Circle in textarea
+- Ripple
+- QRCode
+- [css-houdini.rocks](https://css-houdini.rocks/conic-gradient)
+
+---
+
+# Paint API vs pure Canvas
+
+- [OffscreenCanvas](https://developers.google.com/web/updates/2018/08/offscreen-canvas)
+- Paint API is
+  - reactive
+  - lazy
+
+---
+
+- [Is Houdini ready yet‽](https://ishoudinireadyyet.com/)
+- [houdini.glitch.me](https://houdini.glitch.me/)
 
 ---
 
@@ -1200,3 +1255,8 @@ Front-end developer
 - jiayi.ghu@gmail.com
 - Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
 - GitHub: [jiayihu](https://github.com/jiayihu/)
+- italiajs.slack.com
+
+---
+
+![](assets/renaissance.jpg)
