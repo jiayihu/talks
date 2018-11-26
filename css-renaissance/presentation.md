@@ -157,7 +157,10 @@ preserve: 'computed'
 ```css
 :root { --backgroundColor: red; }
 
-.header { background-color: red; }
+.header {
+  background-color: red;
+  background-color: var(--backgroundColor, white);
+}
 
 .header:hover { background-color: orange; }
 
@@ -185,12 +188,6 @@ preserve: 'computed'
   --width: 100px;
 }
 
-@media (max-width: 1000px) {
-  :root {
-    --width: 200px;
-  }
-}
-
 .box {
   width: 100px;
 }
@@ -198,6 +195,14 @@ preserve: 'computed'
 @media (max-width: 1000px) {
   .box {
     width: 200px;
+  }
+}
+
+.box { width: var(--width); }
+
+@media (max-width: 1000px) {
+  :root {
+    --width: 200px;
   }
 }
 
@@ -219,6 +224,7 @@ If you can preprocess custom properties and get what you expect, stick with prep
 - React/Angular/Vue
 - hyperHTML
 - styled-components
+- [CSS-in-JS: linaria](https://github.com/callstack/linaria)
 
 ^ Anything since it's standard
 Sass files cannot be used without Sass
@@ -335,7 +341,18 @@ a[href^="http"]::after {content: " (" var(--external-link) ")"}
 }
 ```
 
+^ Primitives for design systems
+
+---
+
+# Separate logic from design
+
 [Codepen](https://codepen.io/g12n/pen/ZLYqyr)
+
+- All the logic at the top of the document
+- See changing property
+
+^ Without keeping track in mind of changing properties
 
 ---
 
@@ -380,6 +397,8 @@ const setDocumentVariable = (propertyName, value) => {
 ![](assets/alex.png)
 
 [Codepen](https://codepen.io/tutsplus/pen/MmzNNQ)
+
+^ Styling logic kept in CSS
 
 ---
 
@@ -484,6 +503,12 @@ h2 { font-size: calc(var(--modular-scale) * 2 * var(--base-font-size)); }
 
 # Reusable and extensible components
 
+```html
+<header class="header">
+  <button class="c-button c-header-button"></button>
+</header>
+```
+
 ```css
 .c-button {
   background-color: #eee;
@@ -503,8 +528,9 @@ h2 { font-size: calc(var(--modular-scale) * 2 * var(--base-font-size)); }
 .header .c-button {}
 ```
 
-^ Overriding implementation details
-Error-prone, difficult to undo/override
+^ Overriding HTML implementation details
+We do it because the language has allowed us to see and change implementation details
+Like changing variables in a function from outside
 
 ---
 
@@ -614,6 +640,9 @@ API: Application programming interface [^4]
 }
 ```
 
+^ Without compiling two files
+Components don't know about themes
+
 ---
 
 [.hide-footer]
@@ -703,6 +732,7 @@ class RootCSSVariables extends Component {
 ```css
 /* Navigation.css */
 :host {
+  /* --navigation-bg: var(--primary); */
   --navigation-bg: $primary;
 }
 
@@ -729,7 +759,11 @@ class RootCSSVariables extends Component {
 
 ---
 
-# Runtime performance
+ - [Encapsulation and theming - Maxart](https://maxart2501.github.io/css-theming-talk/)
+
+---
+
+# Runtime performance (25k nodes)
 
 1. Start-up performance: _3x slower_
 2. Style-recalculation: avoid frequent :root changes
@@ -823,9 +857,53 @@ shadowRoot.innerHTML = `
 
 ---
 
+```html
+<c-button class="c-header-button"></c-button>
+```
+
+```css
+.c-header-button {
+  --btn-bg-color: #333;
+  --btn-primary-color: aqua;
+  --btn-font-size: 24px;
+}
+```
+
+---
+
+```html
+<c-navigation class="c-news-navigation"></c-navigation>
+```
+
+```css
+/* NewsNavigation.css */
+.c-news-navigation {
+  --navigation-bg: darkred;
+}
+```
+
+---
+
+```js
+const styles = `:host { background-color: ${props.theme} }`;
+
+return (
+    <ShadowDOM>
+      <style>{styles}</style>
+      <div>
+        <h1>Calendar for {props.date}</h1>
+      </div>
+    </ShadowDOM>
+);
+```
+
+[ReactShadow](https://github.com/Wildhoney/ReactShadow)
+
+---
+
 # Encapsulation
 
-> Encapsulation is used to hide the values or state of a structured data object inside a class, preventing unauthorized parties' direct access to them.
+> Encapsulation is used to hide the values or state of a structured data object inside a class, preventing unauthorized parties direct access to them.
 
 > Publicly accessible methods are generally provided in the class.
 
@@ -873,7 +951,16 @@ Simplifies CSS - Scoped DOM means you can use simple CSS selectors, more generic
 :host {
   contain: none | strict | content | [ size || layout || style || paint ];
 }
+
+:host {
+  contain: content;
+}
 ```
+
+^ size: the element can be sized without the need to examine its dependents for size changes.
+layout: nothing outside the element may affect its internal layout and vice versa (display: flex o left)
+style: effects don't escape the containing element (counter-increment)
+paint: descendants of the element don't display outside its bounds
 
 ---
 
@@ -997,19 +1084,8 @@ render() {
 # CSS Houdini
 
 - API to extend CSS itself
-- Hook into painting/layout rendering engine
+- Hook into CSS rendering engine
 - In JS things move too fast, in CSS too slow
-
----
-
-# CSS Polyfills [^6]
-
-- Polyfilling CSS is incredibly hard
-- CSSOM discards any CSS rule it doesn’t understand
-
-^  a polyfill is code that implements a feature on web browsers that do not support it
-
-[^6]: [smashingmagazine](https://www.smashingmagazine.com/2016/03/houdini-maybe-the-most-exciting-development-in-css-youve-never-heard-of/)
 
 ---
 
@@ -1033,8 +1109,19 @@ render() {
 
 # Houdini
 
-- Normalized CSS
 - Performant CSS polyfills
+- Normalized CSS
+
+---
+
+# CSS Polyfills [^6]
+
+- Polyfilling CSS is incredibly hard
+- CSSOM discards any CSS rule it doesn’t understand
+
+^  a polyfill is code that implements a feature on web browsers that do not support it
+
+[^6]: [smashingmagazine](https://www.smashingmagazine.com/2016/03/houdini-maybe-the-most-exciting-development-in-css-youve-never-heard-of/)
 
 ---
 
@@ -1044,6 +1131,32 @@ render() {
 [.slidecount: false]
 
 ![fit](assets/05-spec-coverage-opt.png)
+
+---
+
+# CSS Properties and Values API
+
+```js
+CSS.registerProperty({
+    name: "--stop-color",
+    syntax: "<color>",
+    inherits: false,
+    initialValue: "rgba(0,0,0,0)"
+});
+```
+
+```css
+.button {
+  --stop-color: red;
+  background: linear-gradient(var(--stop-color), black);
+  transition: --stop-color 1s;
+}
+
+
+.button:hover {
+  --stop-color: green;
+}
+```
 
 ---
 
@@ -1080,15 +1193,41 @@ const setDocumentVariable = (propertyName, value) => {
 
 ---
 
+# CSS Object Model (CSSOM)
+
+[.code-highlight: 1, 2]
+
+```js
+const el = $('#someDiv').style.height;
+el.style.height += 10;
+
+el.style.height = `${Number(el.style.height) + 10}px`;
+```
+
+---
+
+# CSS Object Model (CSSOM)
+
+[.code-highlight: 4]
+
+```js
+const el = $('#someDiv').style.height += 10;
+el.style.height += 10;
+
+el.style.height = `${Number(el.style.height) + 10}px`;
+```
+
+---
+
 # CSS Typed OM
 
 ```js
-el.attributeStyleMap.set('padding', CSS.px(42));
-const padding = el.attributeStyleMap.get('padding');
-console.log(padding.value, padding.unit); // 42, 'px'
+el.attributeStyleMap.set('height', CSS.px(42));
+const height = el.attributeStyleMap.get('height');
+console.log(height.value, height.unit); // 42, 'px'
 
 el.attributeStyleMap.has('opacity') // false
-el.attributeStyleMap.delete('padding')
+el.attributeStyleMap.delete('height')
 el.attributeStyleMap.clear();
 ```
 
@@ -1129,7 +1268,7 @@ registerLayout('masonry', class {
     return ['x', 'y', 'position']
   }
 
-  layout(children, constraintSpace, styleMap, breakToken) {
+  *layout(children, edges, constraints, styleMap) {
     // Layout logic goes here.
   }
 }
@@ -1156,6 +1295,7 @@ if ('layoutWorklet' in CSS) {
 
 - Custom behaviour anywhere a CSS image is expected
 - `background-image`, `border-image`, `linear-gradient`
+- anything that can accept `url()`
 
 
 ```css
@@ -1189,8 +1329,6 @@ registerPaint('circle', class {
 });
 ```
 
-[^7]: [css-houdini-drafts: CSS Paint API Explained](https://github.com/w3c/css-houdini-drafts/blob/master/css-paint-api/EXPLAINER.md)
-
 ^ ctx: CanvasRenderingContext2D
 style: computed Typed-OM style map of only listed inputProperties
 
@@ -1202,12 +1340,14 @@ style: computed Typed-OM style map of only listed inputProperties
 - No `CanvasImageData`, `CanvasText`
 - [spec](https://www.w3.org/TR/css-paint-api-1/#2d-rendering-context)
 
+^ For performance reasons
+With the current API surface you can record all of the canvas commands, and play them back when you need to raster
+
 ---
 
 # Use cases
 
 - Lighter and more performant implementation (ripple)
-- Smaller size compared to images
 - Dynamic background
 - Polyfill for CSS features like _conic gradients_
 
@@ -1228,6 +1368,7 @@ style: computed Typed-OM style map of only listed inputProperties
 - Paint API is
   - reactive
   - lazy
+  - auto-sized
 
 ---
 
@@ -1254,7 +1395,7 @@ Front-end developer
 
 - jiayi.ghu@gmail.com
 - Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
-- GitHub: [jiayihu](https://github.com/jiayihu/)
+- GitHub: [jiayihu/talks](https://github.com/jiayihu//talks)
 - italiajs.slack.com
 
 ---
