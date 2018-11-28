@@ -1,18 +1,309 @@
-footer: CSS Renaissance - Milano Frontend
+footer: Get hyper-excited for web standards - FEVR
 slidenumbers: true
 slidecount: true
 
-# CSS Renaissance
-
-![](assets/renaissance.jpg)
+# Get hyper-excited for web standards
 
 ---
 
-# From the Middle Age to modern CSS
+1. Web Components
+2. Custom Elements
+3. HyperHTML
+4. CSS Custom Properties
+5. Shadow DOM
 
-1. Custom Properties
-2. Shadow DOM
-3. Houdini (Paint API)
+---
+
+# Web Components
+
+---
+
+```html
+<video controls src="video.mp4"></video>
+
+<select>
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</select>
+
+<input type="date">
+<input type="range">
+```
+
+---
+
+```html
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle">
+    Dropdown button
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+  </div>
+</div>
+```
+
+---
+
+... *suspense*
+
+---
+
+![](assets/angular.jpg)
+
+---
+
+```html
+<tabs>
+  <pane title="Hello">Hello</pane>
+  <pane title="World">World</pane>
+</tabs>
+```
+
+---
+
+# Angular Directives
+
+> "Directives let you invent new HTML syntax, specific to your application."
+
+# Reusable Components
+
+> "We use directives to create reusable components. A component allows you to hide complex DOM structure, CSS, and behavior."
+
+---
+
+![fit](assets/dan.png)
+
+--- 
+
+# React
+
+- First class UI
+
+^ Important like first class functions or first-class concurrency
+
+---
+
+![Sebastian Markbåge - DOM as a Second-class Citizen](https://www.youtube.com/watch?v=Zemce4Y1Y-A)
+
+---
+
+# What if want
+
+- Truly reusable components
+- Interoperability
+
+---
+
+# Web Components
+
+1. Custom Elements
+2. HTML Templates
+3. Shadow DOM
+
+---
+
+# Custom Elements
+
+Create new HTML tags
+
+```html
+<c-clock></c-clock>
+```
+
+[Codepen](https://codepen.io/jiayihu/pen/vQVWNZ?editors=1010)
+
+---
+
+# Tic-tac-toe XO
+
+![inline](assets/tic-tac-toe.png)
+
+[in React](https://codepen.io/gaearon/pen/gWWZgR?editors=0110)
+
+---
+
+```js
+const template = document.createElement('template')
+template.innerHTML = `
+  <div>
+      <h1>Hello, world!</h1>
+      <h2>It is <span class="time"></span>.</h2>
+  </div>
+`
+
+class Clock extends HTMLElement {
+  constructor() {
+    super();
+    
+    this.appendChild(template.content.cloneNode(true))
+    this.timeEl = this.querySelector('.time')
+  }
+  
+  connectedCallback() {
+    this.token = window.setInterval(() => {
+      this.timeEl.textContent = new Date().toLocaleTimeString();
+    }, 1000)
+  }
+  
+  disconnectedCallback() {
+    if (this.token) window.clearInterval(this.token);
+  }
+}
+
+customElements.define('c-clock', Clock)
+```
+
+^ - use the class to create a public JavaScript API for your tag
+- any properties/methods become part of the element's DOM interface
+
+---
+
+```html
+<c-square value="X"></c-square>
+```
+
+```js
+const template = document.createElement('template')
+template.innerHTML = `<button class="square"></button>`
+
+class Square extends HTMLElement {
+  static get observedAttributes() {
+    return ['value']
+  }
+  
+  get value() { return this.getAttribute('value') }
+  set value(val) { this.setAttribute('value', val) }
+  
+  constructor() {
+    super();
+    
+    this.appendChild(template.content.cloneNode(true))
+    this.btnEl = this.querySelector('.square')
+  }
+  
+  attributeChangedCallback(attr, old, curr) {
+    if (attr === 'value') this.btnEl.textContent = curr;
+  }
+}
+
+customElements.define('c-square', Square)
+```
+
+^
+- Reflecting properties to attributes
+- keep the element's DOM representation in sync with its JavaScript state
+
+---
+
+# Enter hyperHTML & HyperHTMLElement
+
+```js
+class Square extends HyperHTMLElement {
+  static get observedAttributes() {
+    return ['value']
+  }
+  
+  render() {
+    return this.html`
+      <button class="square">
+        ${this.value}
+      </button>
+    `
+  }
+}
+
+Square.define('c-square')
+```
+
+---
+
+# hyperHTML
+
+```js
+function tick(render) {
+  render`
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is ${new Date().toLocaleTimeString()}.</h2>
+    </div>
+  `;
+}
+
+setInterval(tick, 1000,
+  hyperHTML.bind(document.body)
+);
+```
+
+[Codepen](https://codepen.io/jiayihu/pen/EOdLMp)
+
+---
+
+# hyperHTML
+
+- Declarative and reactive templates
+- Cross-platform IE9+
+- Lightweight 4kB
+- Based on ES6 template literals
+
+---
+
+# Template literals
+
+```js
+function template(chunks, ...interpolations) {
+  console.log(chunks);          // ['1 ', ' 3']
+  console.log(interpolations);  // [2] or [4]
+}
+ 
+template`1 ${2} 3`;
+template`1 ${4} 3`;
+```
+
+---
+
+# Efficient DOM
+
+```js
+const bodyRender = hyperHTML.bind(document.body);
+const names = [
+  { name: 'First item' },
+  { name: 'Second item' },
+  { name: 'Third item' }
+]
+ 
+hyperHTML.bind(document.body)`
+  <h1>${document.title}</h1>
+  <ul>
+    ${names.map(item => `<li>${item.name}</li>`)}
+  </ul>
+`;
+```
+
+---
+
+# Levenshtein algorithm
+
+![inline](assets/minimum-edit-distance.png)
+
+[domdiff](https://github.com/WebReflection/domdiff) based on [petit-dom](https://github.com/yelouafi/petit-dom)
+
+---
+
+# SSR
+
+[viperHTML](https://viperhtml.js.org/viper.html)
+
+![inline](assets/viperhtml.svg)
+
+---
+
+# hyperHTML vs lit-html
+
+[Comparison](https://gist.github.com/WebReflection/fadcc419f5ccaae92bc167d8ff5c611b)
 
 ---
 
@@ -723,22 +1014,6 @@ class RootCSSVariables extends Component {
 
 ---
 
-# Theming with Sass
-
-```css
-/* Navigation.css */
-:host {
-  --navigation-bg: crimson;
-}
-
-.c-navigation {
-  background-color: crimson;
-  background-color: var(--navigation-bg, crimson);
-}
-```
-
----
-
  - [Encapsulation and theming - Maxart](https://maxart2501.github.io/css-theming-talk/)
 
 ---
@@ -1055,308 +1330,6 @@ render() {
 
 ^ Example: autoresizing button
 
----
-
-# CSS Houdini
-
----
-
-# CSS Houdini
-
-- API to extend CSS itself
-- Hook into CSS rendering engine
-- In JS things move too fast, in CSS too slow
-
----
-
-[.background-color: #FFFFFF]
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/03-rendering-process-opt.png)
-
----
-
-[.background-color: #FFFFFF]
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/04-rendering-process-polyfilled-opt.png)
-
----
-
-# Houdini
-
-- Performant CSS polyfills
-- Normalized CSS
-
----
-
-# CSS Polyfills [^6]
-
-- Polyfilling CSS is incredibly hard
-- CSSOM discards any CSS rule it doesn’t understand
-
-^  a polyfill is code that implements a feature on web browsers that do not support it
-
-[^6]: [smashingmagazine](https://www.smashingmagazine.com/2016/03/houdini-maybe-the-most-exciting-development-in-css-youve-never-heard-of/)
-
----
-
-[.background-color: #FFFFFF]
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/05-spec-coverage-opt.png)
-
----
-
-# CSS Properties and Values API
-
-```js
-CSS.registerProperty({
-    name: "--stop-color",
-    syntax: "<color>",
-    inherits: false,
-    initialValue: "rgba(0,0,0,0)"
-});
-```
-
-```css
-.button {
-  --stop-color: red;
-  background: linear-gradient(var(--stop-color), black);
-  transition: --stop-color 1s;
-}
-
-
-.button:hover {
-  --stop-color: green;
-}
-```
-
----
-
-# CSS Object Model (CSSOM)
-
-- Like DOM, but for CSS
-
-```html
-<style>
-  body { background-color: red; }
-</style>
-```
-
-```js
-const stylesheet = document.styleSheets[0];
-stylesheet.cssRules[0].style.backgroundColor = "blue";
-```
-
----
-
-# CSS Object Model (CSSOM)
-
-```javascript
-const getVariable = (el, propertyName) => {
-  const styles = window.getComputedStyle(el);
-  
-  return String(styles.getPropertyValue(propertyName)).trim();
-};
-
-const setDocumentVariable = (propertyName, value) => {
-  document.documentElement.style.setProperty(propertyName, value);
-};
-```
-
----
-
-# CSS Object Model (CSSOM)
-
-[.code-highlight: 1, 2]
-
-```js
-const el = $('#someDiv').style.height;
-el.style.height += 10;
-
-el.style.height = `${Number(el.style.height) + 10}px`;
-```
-
----
-
-# CSS Object Model (CSSOM)
-
-[.code-highlight: 4]
-
-```js
-const el = $('#someDiv').style.height += 10;
-el.style.height += 10;
-
-el.style.height = `${Number(el.style.height) + 10}px`;
-```
-
----
-
-# CSS Typed OM
-
-```js
-el.attributeStyleMap.set('height', CSS.px(42));
-const height = el.attributeStyleMap.get('height');
-console.log(height.value, height.unit); // 42, 'px'
-
-el.attributeStyleMap.has('opacity') // false
-el.attributeStyleMap.delete('height')
-el.attributeStyleMap.clear();
-```
-
-^ Instead of strings, values are exposed as JavaScript objects to facilitate manipulation.
-Map-like objects
-
----
-
-# Why CSS Typed OM
-
-- Fewer bugs
-- Math operations and conversions
-- Better performance (`requestAnimationFrame`)
-
----
-
-# CSS Layout API
-
-- Custom layout logic
-
-```css
-body {
-  display: layout('masonry');
-}
-```
-
----
-
-# CSS Layout API
-
-```js
-registerLayout('masonry', class {
-  static get inputProperties() {
-    return ['width', 'height']
-  }
-
-  static get childrenInputProperties() {
-    return ['x', 'y', 'position']
-  }
-
-  *layout(children, edges, constraints, styleMap) {
-    // Layout logic goes here.
-  }
-}
-```
-
----
-
-# Worklets
-
-- Like Workers but for rendering
-- Indipendent from main thread
-- No access to DOM, Network etc.
-- Lifetime is not defined
-
-```js
-if ('layoutWorklet' in CSS) {
-  CSS.layoutWorklet.addModule('masonry.js');
-}
-```
-
----
-
-# CSS Paint API
-
-- Custom behaviour anywhere a CSS image is expected
-- `background-image`, `border-image`, `linear-gradient`
-- anything that can accept `url()`
-
-
-```css
-.bubble {
-  --circle-color: blue;
-  background-image: url("circle.png");
-  background-image: paint('circle');
-}
-```
-
----
-
-# CSS Paint API [^7]
-
-```js
-registerPaint('circle', class {
-  static get inputProperties() { return ['--circle-color']; }
-  
-  paint(ctx, size, properties) {
-    const color = properties.get('--circle-color');
-    ctx.fillStyle = color;
-
-    const x = size.width / 2;
-    const y = size.height / 2;
-    const radius = Math.min(x, y);
-
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-    ctx.fill();
-  }
-});
-```
-
-^ ctx: CanvasRenderingContext2D
-style: computed Typed-OM style map of only listed inputProperties
-
----
-
-# PaintRenderingContext2D
-
-- A subset of the CanvasRenderingContext2D API
-- No `CanvasImageData`, `CanvasText`
-- [spec](https://www.w3.org/TR/css-paint-api-1/#2d-rendering-context)
-
-^ For performance reasons
-With the current API surface you can record all of the canvas commands, and play them back when you need to raster
-
----
-
-# Use cases
-
-- Lighter and more performant implementation (ripple)
-- Dynamic background
-- Polyfill for CSS features like _conic gradients_
-
----
-
-# Demos
-
-- Circle in textarea
-- Ripple
-- QRCode
-- [css-houdini.rocks](https://css-houdini.rocks/conic-gradient)
-
----
-
-# Paint API vs pure Canvas
-
-- [OffscreenCanvas](https://developers.google.com/web/updates/2018/08/offscreen-canvas)
-- Paint API is
-  - reactive
-  - lazy
-  - auto-sized
-
----
-
-- [Is Houdini ready yet‽](https://ishoudinireadyyet.com/)
-- [houdini.glitch.me](https://houdini.glitch.me/)
-
----
-
 # Always bet on standards
 
 ^ CSS variables can be introduced in existing Sass codebase
@@ -1377,7 +1350,3 @@ Front-end developer
 - Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
 - GitHub: [jiayihu/talks](https://github.com/jiayihu//talks)
 - italiajs.slack.com
-
----
-
-![](assets/renaissance.jpg)
