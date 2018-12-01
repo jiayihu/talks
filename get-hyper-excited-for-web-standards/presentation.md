@@ -65,29 +65,10 @@ slidecount: true
 
 ---
 
-# Angular Directives
-
-> "Directives let you invent new HTML syntax, specific to your application."
-
-# Reusable Components
-
-> "We use directives to create reusable components. A component allows you to hide complex DOM structure, CSS, and behavior."
-
----
-
 ![fit](assets/dan.png)
 
---- 
-
-# React
-
-- First class UI
-
-^ Important like first class functions or first-class concurrency
-
----
-
-![Sebastian Markbåge - DOM as a Second-class Citizen](https://www.youtube.com/watch?v=Zemce4Y1Y-A)
+^ First class UI
+First class functions - Node and FP
 
 ---
 
@@ -115,14 +96,6 @@ Create new HTML tags
 ```
 
 [Codepen](https://codepen.io/jiayihu/pen/vQVWNZ?editors=1010)
-
----
-
-# Tic-tac-toe XO
-
-![inline](assets/tic-tac-toe.png)
-
-[in React](https://codepen.io/gaearon/pen/gWWZgR?editors=0110)
 
 ---
 
@@ -159,6 +132,14 @@ customElements.define('c-clock', Clock)
 
 ^ - use the class to create a public JavaScript API for your tag
 - any properties/methods become part of the element's DOM interface
+
+---
+
+# Tic-tac-toe XO
+
+![inline](assets/tic-tac-toe.png)
+
+[in React](https://codepen.io/gaearon/pen/gWWZgR?editors=0110)
 
 ---
 
@@ -278,7 +259,7 @@ const names = [
 hyperHTML.bind(document.body)`
   <h1>${document.title}</h1>
   <ul>
-    ${names.map(item => `<li>${item.name}</li>`)}
+    ${names.map(item => wire(item)`<li>${item.name}</li>`)}
   </ul>
 `;
 ```
@@ -293,6 +274,120 @@ hyperHTML.bind(document.body)`
 
 ---
 
+# Faster than React?
+
+![](https://media.giphy.com/media/2d400VBPJbxaU/giphy.mp4)
+
+^ React overhead on mobile and large trees
+
+---
+
+# Declarative template
+
+```js
+	
+hyperHTML.bind(form)`
+  <input
+    class=${['one', 'more', 'class'].join(' ')}
+    disabled=${!isAuthorized}
+    oninput=${e => document.title = e.target.value}
+    value=${defaultInputValue}
+    placeholder=${'type something'}
+    style=${{ color: 'red' }}
+  >
+`;
+```
+
+^ addEventListener behind the scenes
+
+---
+
+# Not primitive types [^codepen-obj]
+
+```js
+customElements.define('h-welcome', class HyperWelcome extends HTMLElement {
+    constructor(...args) {
+      super(...args);
+      this.html = hyperHTML.bind(this);
+    }
+
+    get user() { return this._user; }
+    set user(value) {
+      this._user = value;
+      this.render();
+    }
+
+    render() { return this.html`<h1>Hello, ${this._user.name}</h1>`; }
+  }
+);
+
+hyperHTML.bind(document.getElementById('root'))`
+  <h-welcome user=${{ name: 'Sara' }} />
+  <h-welcome user=${{ name: 'Cahal' }} />
+`;
+```
+
+[^codepen-obj]: [Codepen](https://codepen.io/jiayihu/pen/QVqNGJ?editors=0010)
+
+---
+
+# HyperHTMLElement [^github]
+
+```js
+class Game extends HyperHTMLElement {
+  get defaultState() {
+    return { history: [], stepNumber: 0 };
+  }
+  
+  handleClick(event) {
+    this.setState({ ... })
+  }
+  
+  render() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+
+    return this.html`
+      <div class="game-board">
+        <c-board
+          squares=${current.squares}
+          onboardclick=${i => this.handleClick(i)}
+        />
+      </div>
+    `;
+  }
+}
+
+Game.define('c-game');
+```
+
+[^github]: [hyperHTML-Element](https://github.com/WebReflection/hyperHTML-Element)
+
+---
+
+```js
+class Square extends HyperHTMLElement {
+  static get observedAttributes() {
+    return ['value']
+  }
+
+  static get booleanAttributes() {
+    return ['disabled']
+  }
+  
+  attributeChangedCallback() {
+    this.render();
+  }
+  
+  render() {
+    return this.html`<button class="square">${this.value}</button>`
+  }
+}
+Square.define('c-square')
+```
+
+---
+
 # SSR
 
 [viperHTML](https://viperhtml.js.org/viper.html)
@@ -301,9 +396,45 @@ hyperHTML.bind(document.body)`
 
 ---
 
-# hyperHTML vs lit-html
+# hyperHTML vs lit-html vs omi
 
-[Comparison](https://gist.github.com/WebReflection/fadcc419f5ccaae92bc167d8ff5c611b)
+[vs lit-html](https://gist.github.com/WebReflection/fadcc419f5ccaae92bc167d8ff5c611b)
+
+[Tencent/omi](https://github.com/Tencent/omi)
+
+---
+
+# Custom Elements support
+
+![inline](assets/custom-elements.png)
+
+[webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)
+[WebReflection/document-register-element](https://github.com/WebReflection/document-register-element)
+
+---
+
+# Custom Elements in React
+
+
+[custom-elements-everywhere](https://custom-elements-everywhere.com/)
+[Web Components in React](https://reactjs.org/docs/web-components.html)
+
+---
+
+# Use cases for Custom Elements and hyperHTML
+
+- UI components and libraries
+  - [Primer - Github](https://primer.style/)
+  - [Vaadin](https://vaadin.com/components/)
+- Third-party widgets
+- Lightweight **framework-less** **compiler-less** development
+
+^ Assembler vs C
+JSX vs template literals
+
+---
+
+# Custom Properties
 
 ---
 
@@ -318,24 +449,6 @@ Inherited user-defined *properties*
 --- 
 
 # Runtime CSS Variables
-
-```css
-:root {
-  --primary: #007bff;
-}
-
-.btn-primary {
-  color: var(--primary, deepskyblue);
-}
-```
-
-^ Syntax to avoid ambiguity
-
---- 
-
-# Runtime CSS Variables
-
-[.code-highlight: 5, 6, 7]
 
 ```css
 :root { --primary: #007bff; }
@@ -353,7 +466,7 @@ Inherited user-defined *properties*
 
 ---
 
-# Inherited user-definied properties [^ref]
+# Inherited user-defined properties [^ref]
 
 ```css
 /* CSS */
@@ -389,7 +502,9 @@ p { --primary: aqua; }
 }
 
 h1 {
+  --background: midnightblue;
   color: var(--color);
+  background-color: var(--background);
 }
 
 /* becomes */
@@ -401,111 +516,15 @@ h1 {
 h1 {
   color: red;
   color: var(--color);
+
+  --background: midnightblue;
+  background-color: var(--background);
 }
 ```
 
 ^ Treats custom properties much like preprocessor variables
 Can use only :root
 Aims to provide a future-proof way of using a limited subset
-
----
-
-# Comparison
-
-```css
-:root { --backgroundColor: red; }
-
-.header { background-color: var(--backgroundColor, white); }
-
-.header:hover { --backgroundColor: orange; }
-
-.header.is-about-page { --backgroundColor: yellow; }
-```
-
----
-
-# postcss-custom-properties
-
-```css
-:root { --backgroundColor: red; }
-
-.header {
-  background-color: red;
-  background-color: var(--backgroundColor, white);
-}
-
-.header:hover { --backgroundColor: orange; }
-
-.header.is-about-page { --backgroundColor: yellow; }
-```
-
----
-
-# postcss-css-variables
-
-preserve: 'computed'
-
-```css
-:root { --backgroundColor: red; }
-
-.header {
-  background-color: red;
-  background-color: var(--backgroundColor, white);
-}
-
-.header:hover { background-color: orange; }
-
-.header:hover { --backgroundColor: orange; }
-
-.header.is-about-page { --backgroundColor: yellow; }
-```
-
----
-
-```css
-:root { --width: 100px; }
-
-@media (max-width: 1000px) {
-	:root { --width: 200px; }
-}
-
-.box { width: var(--width); }
-```
-
----
-
-```css
-:root {
-  --width: 100px;
-}
-
-.box {
-  width: 100px;
-}
-
-@media (max-width: 1000px) {
-  .box {
-    width: 200px;
-  }
-}
-
-.box { width: var(--width); }
-
-@media (max-width: 1000px) {
-  :root {
-    --width: 200px;
-  }
-}
-
-```
-
----
-
-# Stripping custom properties
-
-If you can preprocess custom properties and get what you expect, stick with preprocessor variables.
-
-- [postcss-simple-vars](https://github.com/postcss/postcss-simple-vars)
 
 ---
 
@@ -519,47 +538,6 @@ If you can preprocess custom properties and get what you expect, stick with prep
 
 ^ Anything since it's standard
 Sass files cannot be used without Sass
-
----
-
-Values can be any valid CSS value: numbers, strings, lengths, colors, etc.
-
-```css
-/* CSS */
-:root {
-  --foo: console.log('Hello world');
-}
-```
-
-```js
-// JS
-const styles = window.getComputedStyle(document.documentElement);
-const value = styles.getPropertyValue('--foo');
-eval(value);
-```
-
----
-
-# i18n [^1]
-
-```css
-:root,
-:root:lang(en) {
-  --external-link: "external link";
-}
-
-:root:lang(de) {
-  --external-link: "externer Link";
-}
-
-:root:lang(it) {
-  --external-link: "Link esterno";
-}
-
-a[href^="http"]::after {content: " (" var(--external-link) ")"}
-```
-
-[^1]: [publishing-project.rivendellweb.net](https://publishing-project.rivendellweb.net/theming-the-web-with-css-custom-properties/)
 
 ---
 
@@ -750,28 +728,6 @@ $gutterLg: 3em;
 
 ---
 
-# Responsive modular scale
-
-```css
-
-:root {
-  --base-font-size: 1em;
-  --modular-scale: 1.2;
-}
-p { font-size: var(--base-font-size); }
-h1 { font-size: calc(var(--modular-scale) * 3 * var(--base-font-size)); }
-h2 { font-size: calc(var(--modular-scale) * 2 * var(--base-font-size)); }
-
-@media (min-width: 30em) {
-  :root { --modular-scale: 1.333 }
-}
-@media (min-width: 48em) {
-  :root { --modular-scale: 1.414 }
-}
-```
-
----
-
 # Reusable and extensible components
 
 ```html
@@ -848,48 +804,6 @@ API: Application programming interface [^4]
 
 ---
 
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/bbc.png)
-
----
-
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/bbc1.png)
-
----
-
-# Variant Theming
-
-```html
-<nav class="c-navigation c-news-navigation"></nav>
-```
-
-```css
-/* Navigation.css */
-:host {
-  --navigation-bg: var(--primary)
-}
-
-.c-navigation {
-  background-color: var(--navigation-bg);
-}
-```
-
-```css
-/* NewsNavigation.css */
-.c-news-navigation {
-  --navigation-bg: darkred;
-}
-```
-
----
-
 # Static Theming
 
 ```css
@@ -916,88 +830,6 @@ Components don't know about themes
 
 ---
 
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-![fit](assets/twitter.png)
-
----
-
-# User theme
-
-```css
-:root {
-  --user-color: #01579B;
-}
-
-.u-textUserColor,
-.u-borderUserColor {
-  color: var(--user-color) !important;
-}
-```
-
----
-
-# Theming with JS
-
-```js
-class App extends Component {
-  constructor(props) {
-    super(props);
-    const theme = {
-      '--main-color': '#1b70de',
-      '--bg-color': '#FFF',
-      '--text-color': '#000',
-      '--button-color': 'rgba(0, 0, 0, 0.8)',
-      '--header-color': '#424242',
-    };
-    this.state = { theme };
-  }
-
-  render() {
-    return (
-      <div>
-        <RootCSSVariables variables={this.state.theme} />
-        {...}
-      </div>
-    );
-  }
-}
-```
-
-^ Components are written with custom properties without knowing about themes
-Also without style props or context
-
----
-
-# Theming with JS
-
-```js
-class RootCSSVariables extends Component {
-  componentDidMount() {  
-    this.updateCSSVariables(this.props.variables);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.variables !== prevProps.variables) {     
-      this.updateCSSVariables(this.props.variables);
-    }
-  }
-
-  updateCSSVariables(variables) {   
-    Object.keys(variables).forEach((key) => {
-      const value = variables[key]
-      document.documentElement.style.setProperty(key, value));
-    });
-  }
-
-  render() { return this.props.children }
-}
-```
-
----
-
 # Theming with Sass
 
 ```css
@@ -1014,18 +846,7 @@ class RootCSSVariables extends Component {
 
 ---
 
- - [Encapsulation and theming - Maxart](https://maxart2501.github.io/css-theming-talk/)
-
----
-
-# Runtime performance (25k nodes)
-
-1. Start-up performance: _3x slower_
-2. Style-recalculation: avoid frequent :root changes
-3. Setting with JS
-  - `el.setProperty('--color', 'green')` _4x slower_ than
-  - `el.setProperty('color', 'green')`
-4. _1.3x faster_ than inline styles
+[Encapsulation and theming - Maxart](https://maxart2501.github.io/css-theming-talk/)
 
 ---
 
@@ -1126,19 +947,6 @@ shadowRoot.innerHTML = `
 
 ---
 
-```html
-<c-navigation class="c-news-navigation"></c-navigation>
-```
-
-```css
-/* NewsNavigation.css */
-.c-news-navigation {
-  --navigation-bg: darkred;
-}
-```
-
----
-
 ```js
 const styles = `:host { background-color: ${props.theme} }`;
 
@@ -1190,44 +998,9 @@ Simplifies CSS - Scoped DOM means you can use simple CSS selectors, more generic
   pointer-events: none;
   opacity: 0.4;
 }
-
-:host-context(.dark-theme) {
-  background-color: black;
-}
 ```
 
 ^ Rules in the parent page have higher specificity than :host
-
----
-
-# CSS Containment
-
-```css
-:host {
-  contain: none | strict | content | [ size || layout || style || paint ];
-}
-
-:host {
-  contain: content;
-}
-```
-
-^ size: the element can be sized without the need to examine its dependents for size changes.
-layout: nothing outside the element may affect its internal layout and vice versa (display: flex o left)
-style: effects don't escape the containing element (counter-increment)
-paint: descendants of the element don't display outside its bounds
-
----
-
-[.header: #6C8EBF]
-[.background-color: #FFFFFF]
-[.hide-footer]
-[.slidenumbers: false]
-[.slidecount: false]
-
-# With Custom Properties?
-
-![inline fit](assets/shadow-dom-1.png)
 
 ---
 
@@ -1246,27 +1019,12 @@ paint: descendants of the element don't display outside its bounds
 # vjeux CSS-in-JS
 
 1. Global namespace => **Shadow DOM**
-2. Dependencies  => **Shadow DOM**
+2. Dependencies  => **postcss**
 3. Dead code => **Shadow DOM**
-4. Minification => **Shadow DOM (?)**
+4. Minification => **Shadow DOM**
 5. Sharing constants => **Custom Properties**
-6. Non-deterministic resolution => **Shadow DOM (?)**
+6. Non-deterministic resolution => **Shadow DOM**
 7. Breaking isolation => **Shadow DOM**
-
----
-
-# Dependencies
-
-With [postcss-import](https://github.com/postcss/postcss-import)
-
-```css
-@import "normalize";
-@import "local/button.css";
-
-.c-promo-button {
-  background: rebeccapurple;
-}
-```
 
 ---
 
@@ -1308,31 +1066,7 @@ No runtime cost for
 
 ---
 
-# Sharing constants
-
-```css
-.c-button {
-  padding: var(--button-padding);
-}
-```
-
-```js
-render() {
-  const buttonPadding = 10
-  return (
-    <button
-      className="c-button"
-      style={{ '--button-padding': buttonPadding }}
-    ></button>
-  )
-}
-```
-
-^ Example: autoresizing button
-
-# Always bet on standards
-
-^ CSS variables can be introduced in existing Sass codebase
+[hyperHTML tic-tac-toe with Shadow DOM](https://codepen.io/jiayihu/pen/PxxBoj)
 
 ---
 
@@ -1349,4 +1083,8 @@ Front-end developer
 - jiayi.ghu@gmail.com
 - Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
 - GitHub: [jiayihu/talks](https://github.com/jiayihu//talks)
-- italiajs.slack.com
+- fevr.slack.com
+
+---
+
+# Get hyper-excited
