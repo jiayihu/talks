@@ -25,28 +25,46 @@ type ShippingAddress = {
 ---
 
 ```typescript
-function fillShippingInfo(info: : CheckoutInfo): CheckoutInfo { .. }
-function fillPaymentMethod(info: : CheckoutInfo): CheckoutInfo { .. }
-function fillShippingEstimate(info: : CheckoutInfo): CheckoutInfo { .. }
+function setShippingAddress(info: CheckoutInfo)
+  : CheckoutInfo { .. }
+function setPaymentMethod(info: CheckoutInfo)
+  : CheckoutInfo { .. }
+function setShippingCourier(info: CheckoutInfo)
+  : CheckoutInfo { .. }
 
-function checkout(initialInfo: CheckoutInfo): CheckoutInfo {
-  return fillShippingInfo()
-    .then(fillPaymentMethod)
-    .then(fillShippingEstimate)
+function checkout(initialInfo: CheckoutInfo)
+  : CheckoutInfo {
+  return setShippingAddress()
+    .then(setPaymentMethod)
+    .then(setShippingCourier)
 }
 ```
 
 ---
 
+# Assumptions
+
+- FP concepts
+  - purity
+  - composition
+  - immutability
+- Functor, Applicative, Monad, Semigroup/Monoid
+
+---
+
 # Domain Model [^1]
 
-1. Entities
-2. Behaviours => Services
+1. **Entities**
+  - With smart constructors as factories
+2. **Behaviours**
+  - Services
 3. Ubiquitous language
 4. Bounded context
 
 
 [^1]: [Domain Driven Design](https://www.amazon.it/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)
+
+^ Factories encapsulates validation, constructors are private
 
 ^ DDD: Understanding the domain and abstracting the characteristics in the form of a model
 
@@ -56,7 +74,7 @@ function checkout(initialInfo: CheckoutInfo): CheckoutInfo {
 
 ---
 
-1. Model entities with **immutable** Algebric Data Types (ADT)
+1. Model entities with **immutable** Algebraic Data Types (ADT)
 2. Model behaviours as pure functions in modules
 3. Behaviours operate on the types of the entities
 
@@ -84,18 +102,18 @@ export type PaymentMethod = Readonly<{
   cardCode: string;
 }>;
 
-export type ShippingEstimate = Readonly<{
+export type ShippingCourier = Readonly<{
   shippingMethod: string;
   estimate: number;
 }>;
 
-export type CheckoutInfo = ShippingAddress & PaymentMethod & ShippingEstimate;
+export type CheckoutInfo = ShippingAddress & PaymentMethod & ShippingCourier;
 ```
 
 ---
 
 ```ts
-import { ShippingAddress, PaymentMethod, ShippingEstimate } from "./domain.ts";
+import { ShippingAddress, PaymentMethod, ShippingCourier } from "./domain.ts";
 
 export function setShippingAddress(address: ShippingAddress): void {}
 
@@ -107,7 +125,7 @@ export function verifyPaymentMethod(payment: PaymentMethod): PaymentMethod {
 
 export function setPaymentMethod(payment: PaymentMethod): void {}
 
-export function setShippingEstimate(payment: ShippingEstimate): void {}
+export function setShippingCourier(payment: ShippingCourier): void {}
 
 ```
 
@@ -117,7 +135,7 @@ export function setShippingEstimate(payment: ShippingEstimate): void {}
 
 # Why TypeScript (similar to Scala)
 
-1. Algebric data types
+1. Algebraic data types
 2. Immutability helpers
 3. Function composition and higher-order functions
 4. Advanced static type system with type inference and generics
@@ -133,7 +151,7 @@ export function setShippingEstimate(payment: ShippingEstimate): void {}
 
 ---
 
-# Algebric Data Types
+# Algebraic Data Types
 
 ---
 
@@ -194,7 +212,7 @@ export type PaymentMethod = Readonly<{
 }>;
 
 type ShippingMethod = 'Prime' | 'Standard';
-export type ShippingEstimate = Readonly<{
+export type ShippingCourier = Readonly<{
   shippingMethod: ShippingMethod;
   estimate: number;
 }>;
@@ -205,7 +223,7 @@ export type ShippingEstimate = Readonly<{
 # Pattern matching
 
 ```ts
-function getEstimate(shippingMethod: ShippingMethod) {
+function getCourier(shippingMethod: ShippingMethod) {
   switch (shippingMethod) {
     case 'Standard':
       return 3;
@@ -249,6 +267,8 @@ type ChequePayment = {
 export type PaymentMethod = CardPayment | CashPayment | ChequePayment
 ```
 
+^ Ubiquitous language
+
 ---
 
 # Inheritance cons
@@ -265,7 +285,7 @@ Product of sets.
 
 ```ts
 type ShippingMethod = 'Prime' | 'Standard'
-type EstimateTuple = [ShippingMethod, number]
+type CourierTuple = [ShippingMethod, number]
 
 //: ShippingMethod * number
 ```
@@ -277,7 +297,7 @@ type EstimateTuple = [ShippingMethod, number]
 # Product type
 
 ```ts
-type EstimateRecord = {
+type CourierRecord = {
   shippingMethod: 'Prime' | 'Standard';
   estimate: number;
 };
@@ -294,11 +314,11 @@ from . to = to . from = identity
 ```
 
 ```ts
-function toRecord(tuple: EstimateTuple): EstimateRecord {
+function toRecord(tuple: CourierTuple): CourierRecord {
   return { shippingMethod: tuple[0], estimate: tuple[1] }
 }
 
-function fromRecord(record: EstimateRecord): EstimateTuple {
+function fromRecord(record: CourierRecord): CourierTuple {
   return [record.shippingMethod, record.estimate]
 }
 ``` 
@@ -359,36 +379,6 @@ export type ShippingAddress = Readonly<{
 
 ---
 
-# Sum types again - More contraints
-
-```ts
-import { some, none } from 'fp-ts/lib/Option';
-
-type String20 = Option<string>
-type CAPString5 = Option<string>
-
-function createString20(s: string): String20 {
-  return s.length < 20 ? some(s) : none;
-}
-
-function createCAPString5(s: string): CAPString5 {...}
-```
-
----
-
-
-# Sum types again - More contraints
-
-```ts
-export type ShippingAddress = Readonly<{
-  name: String20;
-  street: String20;
-  city: String20;
-  cap: CAPString5;
-}>;
-```
----
-
 # Sum types again - Either
 
 ```ts
@@ -405,31 +395,170 @@ type Either<L, R> =
 
 ---
 
-# Ubiquitous language
+# Either
 
 ```ts
-export type ShippingAddress = Readonly<{
-  name: String20;
-  street: String20;
-  city: String20;
-  cap: CAPString5;
+import { left, right } from 'fp-ts/lib/Either';
 
-  pickup: PickupType;
-}>;
+export function verifyPaymentMethod(payment: PaymentMethod): Either<string, PaymentMethod> {
+  if (!payment.cardCode) return left('Invalid card');
 
-export type PaymentMethod = Readonly<{
-  paymentMethod: PaymentMethod;
-  cardNumber: CardString10;
-  cardExpiration: ExpirationString4;
-  cardCode: NumericString3;
-}>;
-
-type ShippingMethod = 'Prime' | 'Standard';
-export type ShippingEstimate = Readonly<{
-  shippingMethod: ShippingMethod;
-  estimate: number;
-}>;
+  return right();
+}
 ```
+
+---
+
+# Either Monad - Fail fast
+
+```ts
+export function verifyShippingAddress(address: ShippingAddress)
+  : Either<string, ShippingAddress> {}
+
+export function verifyPaymentMethod(payment: PaymentMethod)
+  : Either<string, PaymentMethod> {}
+
+export function verifyCheckoutInfo(checkoutInfo: CheckoutInfo)
+  : Either<string, CheckoutInfo> {
+  // Structural subtyping
+  return verifyShippingAddress(checkoutInfo)
+    .chain(verifyPaymentMethod)
+}
+```
+
+^ Instead of if annidati, try-catch etc.
+
+^ But our focus is typing business logic, not advantages of FP abstractions
+
+^ Ubiquitous language
+
+---
+
+# Validation Applicative - Accumulate failures
+
+```ts
+import { validation, failure, success } from 'fp-ts/lib/Validation'
+import { traverse } from 'fp-ts/lib/Array'
+
+export function verifyShippingAddress(address: ShippingAddress)
+  : Validation<NonEmptyArray<string>, ShippingAddress> {}
+
+export function verifyPaymentMethod(payment: PaymentMethod)
+  : Validation<NonEmptyArray<string>, PaymentMethod> {}
+
+export function verifyCheckoutInfo(checkoutInfo: CheckoutInfo)
+  : Validation<NonEmptyArray<string>, CheckoutInfo> {
+  return traverse(validation)(
+    [verifyShippingAddress, verifyPaymentMethod],
+    validator => validator(checkoutInfo)
+  )
+}
+
+verifyCheckoutInfo({ ... }) 
+```
+
+---
+
+# Phantom Types
+
+---
+
+# Phantom Types
+
+Make illegal states unrepresentable
+
+---
+
+```js
+type State = {
+  isFillingAddress: boolean;
+  isFillingPayment: boolean;
+  isFillingCourier: boolean;
+} & CheckoutInfo
+
+class CheckoutForm extends React.Component<{}, State> {
+  state: State = {
+    isFillingAddress: true,
+    isFillingPayment: false,
+    isFillingCourier: false,
+
+    name: '';
+    street: '';
+    city: '';
+    ...
+    paymentMethod: '';
+    cardNumber: '';
+    cardExpiration: '';
+    cardCode: '';
+  }
+
+  render() {
+    return (
+      <form> ... </form>
+    );
+  }
+}
+```
+
+---
+
+```ts
+type FillingAddressState = { type: 'FillingAddressState' }
+  & ShippingAddress
+
+type FillingPaymentState = { type: 'FillingPaymentState' }
+  & ShippingAddress & PaymentMethod
+
+type FillingCourierState = { type: 'FillingCourierState' }
+  & ShippingAddress & PaymentMethod & ShippingCourier
+
+
+type State = 
+  | FillingAddressState
+  | FillingPaymentState
+  | FillingCourierState
+```
+
+---
+
+```js
+class CheckoutForm extends React.Component<{}, State> {
+  state: State = {
+    type: 'FillingAddressState',
+
+    name: '';
+    street: '';
+    city: '';
+    cap: '';
+    pickup: { type: 'HomePickup' }
+  }
+
+  render() {
+    switch (this.state.type) {
+      case 'FillingAddressState':
+        return this.renderAddressFields();
+      case 'FillingPaymentState':
+        return this.renderPaymentFields();
+      case 'FillingCourierState':
+        return this.renderCourieFields();
+    }
+  }
+}
+```
+
+---
+
+# Finite state machine
+
+![inline](./assets/states.png)
+
+---
+
+# Finite state machine
+
+- Each state has different possible data
+- Forces to think about possible states
+- States and transitions are types
 
 ---
 
