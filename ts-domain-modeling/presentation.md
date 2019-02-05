@@ -8,6 +8,10 @@ slidecount: true
 
 ---
 
+![inline](./assets/amazon.png)
+
+---
+
 ```typescript
 type ShippingAddress = {
   name: string;
@@ -25,18 +29,14 @@ type ShippingAddress = {
 ---
 
 ```typescript
-function setShippingAddress(info: CheckoutInfo)
-  : CheckoutInfo { .. }
-function setPaymentMethod(info: CheckoutInfo)
-  : CheckoutInfo { .. }
-function setShippingCourier(info: CheckoutInfo)
-  : CheckoutInfo { .. }
+type Step = (info: CheckoutInfo) => CheckoutInfo
 
-function checkout(initialInfo: CheckoutInfo)
-  : CheckoutInfo {
-  return setShippingAddress()
-    .then(setPaymentMethod)
-    .then(setShippingCourier)
+function checkout(info: CheckoutInfo): CheckoutInfo {
+  return processShippingAddress(info)
+      .then(processPaymentMethod)
+      .then(processShippingCourier)
+      .then(validate)
+      .then(confirmCheckout)
 }
 ```
 
@@ -115,17 +115,19 @@ export type CheckoutInfo = ShippingAddress & PaymentMethod & ShippingCourier;
 ```ts
 import { ShippingAddress, PaymentMethod, ShippingCourier } from "./domain.ts";
 
-export function setShippingAddress(address: ShippingAddress): void {}
+export function processShippingAddress(info: CheckoutInfo): CheckoutInfo {}
 
-export function verifyPaymentMethod(payment: PaymentMethod): PaymentMethod {
-  if (!payment.cardCode) throw new Error('Invalid card');
+export function processPaymentMethod(info: CheckoutInfo): CheckoutInfo {}
 
-  return payment;
+export function processShippingCourier(info: CheckoutInfo): CheckoutInfo {}
+
+export function validate(info: CheckoutInfo): CheckoutInfo {
+  if (!info.cardCode) throw new Error('Invalid card');
+
+  return info;
 }
 
-export function setPaymentMethod(payment: PaymentMethod): void {}
-
-export function setShippingCourier(payment: ShippingCourier): void {}
+export function confirmCheckout(info: CheckoutInfo): CheckoutInfo {}
 
 ```
 
@@ -177,7 +179,7 @@ type PaymentMethod = 'visa' | 'mastercard'
 type Option<A> =
   | { type: 'None' }
   | {
-      type: 'Some'
+      type: 'Some',
       value: A
     }
 ```
@@ -364,7 +366,7 @@ export type ShippingAddress = Readonly<{
 
 ```ts
 type HomePickup = { type: 'HomePickup' }
-type CompanyPickup = { type: 'CompanyPickup', pickupCompany: Option<string> }
+type CompanyPickup = { type: 'CompanyPickup', pickupCompany: string }
 type PickupType = HomePickup | CompanyPickup
 
 export type ShippingAddress = Readonly<{
@@ -384,11 +386,11 @@ export type ShippingAddress = Readonly<{
 ```ts
 type Either<L, R> =
   | {
-      type: 'Left'
+      type: 'Left',
       left: L
     }
   | {
-      type: 'Right'
+      type: 'Right',
       right: R
     }
 ```
@@ -400,10 +402,11 @@ type Either<L, R> =
 ```ts
 import { left, right } from 'fp-ts/lib/Either';
 
-export function verifyPaymentMethod(payment: PaymentMethod): Either<string, PaymentMethod> {
+export function verifyPaymentMethod(payment: PaymentMethod)
+  : Either<string, PaymentMethod> {
   if (!payment.cardCode) return left('Invalid card');
 
-  return right();
+  return right(payment);
 }
 ```
 
@@ -448,22 +451,17 @@ export function verifyPaymentMethod(payment: PaymentMethod)
 
 export function verifyCheckoutInfo(checkoutInfo: CheckoutInfo)
   : Validation<NonEmptyArray<string>, CheckoutInfo> {
-  return traverse(validation)(
-    [verifyShippingAddress, verifyPaymentMethod],
-    validator => validator(checkoutInfo)
-  )
+  const validators = [verifyShippingAddress, verifyPaymentMethod];
+  return traverse(validation)(validators, f => f(checkoutInfo))
 }
 
+// failure(new NonEmptyArray("Invalid address", ["Invalid card"]))
 verifyCheckoutInfo({ ... }) 
 ```
 
 ---
 
-# Phantom Types
-
----
-
-# Phantom Types
+# UI State
 
 Make illegal states unrepresentable
 
@@ -562,8 +560,36 @@ class CheckoutForm extends React.Component<{}, State> {
 
 ---
 
+# Phantom Types
+
+---
+
+```ts
+type FormData<A> = CheckoutInfo;
+
+type Unvalidated = { type: 'Unvalidated' }
+type Validated = { type: 'Validated' }
+
+function createFormData(data: CheckoutInfo)
+  : FormData<Unvalidated> {}
+  
+function setShippingAddress(data: FormData<Unvalidated>, address: ShippingAddress)
+  : FormData<Unvalidated> {}
+
+function validate(data: FormData<Unvalidated>)
+  : FormData<Validated> {}
+
+function confirmCheckout(data: FormData<Validated>)
+  : FormData<Validated> {}
+```
+
+^ Types used only in typings
+
+---
+
 # References
 
 - [Functional and Algebraic Domain Modeling - Debasish Ghosh - DDD Europe 2018](https://www.youtube.com/watch?v=BskNvfNjU_8&t=2640s)
 - [Domain Modeling Made Functional - Scott Wlaschin](https://www.youtube.com/watch?v=Up7LcbGZFuo)
 - [Functional and Reactive Domain Modeling](https://www.manning.com/books/functional-and-reactive-domain-modeling)
+- [Algebraic Data Types - Giulio Canti](https://github.com/gcanti/talks/blob/master/adt/adt.md)
