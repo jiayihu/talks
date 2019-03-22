@@ -55,11 +55,8 @@ function checkout(info: CheckoutInfo): CheckoutInfo {
 # Domain Model [^1]
 
 1. **Entities**
-  - With smart constructors as factories
 2. **Behaviours**
-  - Services
 3. Ubiquitous language
-4. Bounded context
 
 
 [^1]: [Domain Driven Design](https://www.amazon.it/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)
@@ -132,24 +129,6 @@ export function confirmCheckout(info: CheckoutInfo): CheckoutInfo {}
 ```
 
 ^ Pure functions compose and we can build larger abstractions out of smaller ones
-
----
-
-# Why TypeScript (similar to Scala)
-
-1. Algebraic data types
-2. Immutability helpers
-3. Function composition and higher-order functions
-4. Advanced static type system with type inference and generics
-5. Module system
-7. Support of functional data structures: [fp-ts](https://github.com/gcanti/fp-ts)
-
----
-
-# But
-
-1. ~~traits/mixins~~
-2. ~~for-comprehension/do-notation~~
 
 ---
 
@@ -281,6 +260,46 @@ export type PaymentMethod = CardPayment | CashPayment | ChequePayment
 
 ---
 
+```ts
+export interface Field {
+  id: string;
+  type: string;
+  value: any;
+}
+
+export interface TextField extends Field {
+  id: string;
+  type: 'text';
+  value: string;
+}
+
+export interface ListField extends Field {
+  id: string;
+  type: 'list';
+  value: Array<string>;
+}
+```
+
+---
+
+```ts
+export interface TextField {
+  id: string;
+  type: 'text';
+  value: string;
+}
+
+export interface ListField {
+  id: string;
+  type: 'list';
+  value: Array<string>;
+}
+
+export type Field = TextField | ListField
+```
+
+---
+
 # Product type
 
 Product of sets.
@@ -341,6 +360,10 @@ type NonEmptyArray<A> = {
   tail: Array<A>
 }
 ```
+
+---
+
+# Sum types again
 
 ---
 
