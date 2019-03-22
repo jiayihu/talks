@@ -55,10 +55,6 @@ Not trying to convince you to abbandon React
 
 ---
 
-... *suspense*
-
----
-
 ![](assets/angular.jpg)
 
 ---
