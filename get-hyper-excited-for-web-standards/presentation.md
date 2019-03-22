@@ -261,6 +261,9 @@ html`1 ${2} 3`;
 html`1 ${4} 3`;
 ```
 
+^ Very efficient
+Low memory usage
+
 ---
 
 # Efficient DOM
@@ -354,7 +357,7 @@ class Game extends HyperHTMLElement {
       <div class="game-board">
         <c-board
           squares=${current.squares}
-          onboardclick=${i => this.handleClick(i)}
+          onsquareclick=${e => this.handleClick(e.detail)}
         />
       </div>
     `;
@@ -364,31 +367,9 @@ class Game extends HyperHTMLElement {
 
 ---
 
-```js
-class Square extends HyperHTMLElement {
-  static get observedAttributes() {
-    return ['value']
-  }
-  
-  attributeChangedCallback() {
-    this.render();
-  }
-  
-  render() {
-    return this.html`
-      <button class="square">${this.value}</button>
-    `
-  }
-}
-```
+# Server side rendering with [viperHTML](https://viperhtml.js.org/viper.html)
 
----
-
-# SSR
-
-[viperHTML](https://viperhtml.js.org/viper.html)
-
-![inline](assets/viperhtml.svg)
+![right](assets/viperhtml.svg)
 
 ---
 
@@ -398,22 +379,24 @@ class Square extends HyperHTMLElement {
 
 [Tencent/omi](https://github.com/Tencent/omi)
 
+^ easier to start with, through zero specialized syntax
+
 ---
 
 # Custom Elements support
 
 ![inline](assets/custom-elements.png)
 
-[webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)
-[WebReflection/document-register-element](https://github.com/WebReflection/document-register-element)
+- [webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)
+- [WebReflection/document-register-element](https://github.com/WebReflection/document-register-element)
 
 ---
 
 # Custom Elements in React
 
 
-[custom-elements-everywhere](https://custom-elements-everywhere.com/)
-[Web Components in React](https://reactjs.org/docs/web-components.html)
+- [custom-elements-everywhere](https://custom-elements-everywhere.com/)
+- [Web Components in React](https://reactjs.org/docs/web-components.html)
 
 ---
 
@@ -424,6 +407,76 @@ class Square extends HyperHTMLElement {
   - [Vaadin](https://vaadin.com/components/)
 - Long-lasting web projects
 - Lightweight **framework-less** **compiler-less** development
+
+---
+
+> Standards are the best way, if not the only one, to move the Web forward.
+
+> - Andrea Giammarchi
+
+---
+
+# Last notes - [Redux](https://github.com/WebReflection/hyperHTML-Element/issues/12)
+
+```ts
+export class Homepage extends ConnectedHyperElement {
+  connectedCallback() {
+    super.connectedCallback();
+
+    getFeeds().then(feeds => this.dispatch(addFeeds(feeds)));
+    this.render();
+  }
+
+  stateChanged(state) {
+    this.feeds = state.feeds;
+    this.render();
+  }
+
+  render() {
+    console.log(this.feeds)
+  }
+}
+```
+
+^ Redux for example is implemented in pure JS, framework agnostic and it has spread globally in Angular, React and VueJS
+
+---
+
+# Last notes - [Hooks](https://medium.com/@WebReflection/neverland-the-hyperhtmls-hook-a0c3e11324bb)
+
+```ts
+import stardust, {html, useState} from 'neverland';
+
+const Counter = stardust(() => {
+  const [count, setCount] = useState(0);
+
+  return html`
+    <p>You clicked ${count} times</p>
+    <button onclick=${() => setCount(count + 1)}>
+      Click me
+    </button>
+  `;
+});
+```
+
+---
+
+# Last notes - [Testing](https://github.com/WebReflection/basicHTML)
+
+```ts
+import { Button } from './Button';
+
+describe('<mr-button>', () => {
+  it('renders correct className', () => {
+    const element = new Button();
+    element.setAttribute('kind', 'primary');
+    element.render();
+    const button = element.querySelector('button');
+
+    expect(button.classList.contains('button--primary')).toBe(true);
+  });
+});
+```
 
 ---
 
