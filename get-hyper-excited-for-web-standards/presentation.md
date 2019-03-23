@@ -215,7 +215,7 @@ Square.define('c-square')
 
 ---
 
-# hyperHTML
+# hyperHTML (4kB)
 
 ```js
 const render = hyperHTML.bind(document.body);
@@ -233,15 +233,6 @@ setInterval(tick, 1000);
 ```
 
 [Codepen](https://codepen.io/jiayihu/pen/EOdLMp)
-
----
-
-# hyperHTML
-
-- Declarative and reactive templates
-- Cross-platform IE9+
-- Lightweight 4kB
-- Based on ES6 template literals
 
 ---
 
@@ -287,26 +278,6 @@ hyperHTML.bind(document.body)`
 ![inline](assets/minimum-edit-distance.png)
 
 [domdiff](https://github.com/WebReflection/domdiff) based on [petit-dom](https://github.com/yelouafi/petit-dom)
-
----
-
-# Declarative template
-
-```js
-	
-hyperHTML.bind(form)`
-  <input
-    class="form-control"
-    disabled=${!isAuthorized}
-    oninput=${e => document.title = e.target.value}
-    value=${defaultInputValue}
-    placeholder=${'type something'}
-    style=${{ color: 'red' }}
-  >
-`;
-```
-
-^ addEventListener behind the scenes
 
 ---
 
@@ -376,15 +347,6 @@ class Game extends HyperHTMLElement {
 [Tencent/omi](https://github.com/Tencent/omi)
 
 ^ easier to start with, through zero specialized syntax
-
----
-
-# Custom Elements support
-
-![inline](assets/custom-elements.png)
-
-- [webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)
-- [WebReflection/document-register-element](https://github.com/WebReflection/document-register-element)
 
 ---
 
@@ -487,7 +449,7 @@ describe('<mr-button>', () => {
 Front-end developer
 
 - Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
-- GitHub: [jiayihu/talks](https://github.com/jiayihu//talks)
+- GitHub: [github.com/jiayihu/talks](https://github.com/jiayihu/talks)
 - italiajs.slack.com
 
 ---
