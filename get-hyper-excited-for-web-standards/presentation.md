@@ -1,8 +1,8 @@
-footer: Get hyper-excited for web standards - Codemotion Rome 2019
+footer: Get hyper-excited for web standards - FVG
 slidenumbers: true
 slidecount: true
 
-![](assets/codemotion.jpg)
+# Get hyper-excited for web standards
 
 ---
 
