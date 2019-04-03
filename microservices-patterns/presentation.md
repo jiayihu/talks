@@ -1,20 +1,20 @@
-footer: A complete tour of microservices
+footer: Microservices patterns
 slidenumbers: true
 slidecount: true
 
 [.footer: Laurea Magistrale in Informatica 2018/2019 - Università di Padova]
 
-# A complete tour of microservices
+# Microservices patterns
 
 ## Giovanni Jiayi Hu
 
 ---
 
-# Scaling
+# Scaling [^1]
 
-1. **Size** scalability
-2. **Geographical** scalability
-3. **Administrative** scalability
+![inline](images/monolith.png)
+
+[^1]: [Martin Fowler - Microservices](https://martinfowler.com/articles/microservices.html)
 
 ---
 
@@ -24,7 +24,7 @@ slidecount: true
 
 # Microservices
 
-> A microservice architecture as a **service-oriented architecture** composed of **loosely coupled** elements that have **bounded contexts**.
+> A microservice architecture is a **service-oriented architecture** composed of **loosely coupled** elements that have **bounded contexts**.
 
 ^ SOA + DDD + CI/CD
 
@@ -36,7 +36,7 @@ slidecount: true
 
 ---
 
-![inline](images/exploring.png)
+![inline fit](images/microservices-architecture.png)
 
 ---
 
@@ -44,21 +44,36 @@ slidecount: true
 
 ---
 
-# Docker
+# Forces
+
+- Encapsulation of technology stack
+- Service isolation
+- Resource constraining
+- Location indipendence
+
+^ k8s orchestrates using resourse usage
+Machines are not pets
+
+---
+
+# Solution: Docker
 
 - **Image**: an executable package that includes everything needed to run an application
 - **Isolated containers**: runtime instance of image
 
 ![right fit](images/docker.png)
 
+^ Usally image is root Linux filesystem
+
 ---
 
-# Docker container
+# Containerization
 
-- Isolated group of processes that are restricted to a private root filesystem and process namespace
-- Isolate filesystem and network
-- Can’t see each others’ processes
-- Resource usage can be bounded
+> The mechanism by which a **host operating system** runs programs in **isolated user-space environments**.
+
+---
+
+![inline](images/docker-vm.png)
 
 ---
 
@@ -67,24 +82,10 @@ slidecount: true
 - Shared host kernel and OS resources
 - Less isolation but more lightweight
 - Snapshot images
-- Based on OS-level virtualization
 - Weights MB
 
 ^ - Decoupled from the underlying infrastructure and from the host filesystem
 - portable across clouds and OS distributions.
-
----
-
-![inline](images/docker-vm.png)
-
----
-
-# Service
-
-> Just a “container in production.” 
-
-^ - The way to run one image
-- what ports it should use
 
 ---
 
@@ -94,7 +95,7 @@ slidecount: true
 
 # Kubernetes (K8s)
 
-Declarative configuration and automation for for managing containerized services
+**Declarative** configuration and **automation** for for managing containerized services
 
 ![right fit](images/k8s.png)
 
@@ -113,31 +114,18 @@ Declarative configuration and automation for for managing containerized services
 
 ---
 
-![inline](images/k8s-arch4.png)
-
----
-
-![inline](images/k8s-node.png)
-
----
-
-# K8s entities
-
-- Pods
-- Controllers
-- Deployments
-
----
-
-# Service
-
-> A Kubernetes Service is an abstraction which defines a logical set of Pods and a policy by which to access them.
+![inline](images/k8s-functions.png)
 
 ---
 
 # Auto-scaling
 
-?
+- *desiredReplicas = currentReplicas * (currentMetricValue / desiredMetricValue )*
+- Avoids over/under-provisioning
+- Avoids *thrashing*
+
+^ CPU utilization
+Period 15s in control loop (Control Manager)
 
 ---
 
@@ -151,24 +139,39 @@ Declarative configuration and automation for for managing containerized services
 
 # Rolling Updates
 
-![inline](images/controller.svg)
+- Zero down-time
+- Guarantee minimum availability
+- Use health checks
+- Ability to roll back to a past version (**rollout**)
 
 ---
 
-![inline](images/rolling-deploy.svg)
+# Forces
 
----
+- Encapsulation of microservices
+- Single entry point
+- Stable HTTP endpoint to reach services
+- Route Level 7 traffic
 
-![](images/api-gateway.png)
+^ K8s services allow only communication inside the cluster
+Services use TCP/AMQP
 
 ---
 
 # API Gateway
 
-- Application level load balancing
+![inline](images/api-gateway-nginx.png)
+
+---
+
+# API Gateway - Ambassador
+
+- Level 7 load balancing
 - HTTP routing
 - Authentication
 - Rate limiting
+
+![right 70%](images/ambassador.png)
 
 ---
 
@@ -179,14 +182,21 @@ Declarative configuration and automation for for managing containerized services
 # Relational databases scalability
 
 1. Inefficient joins across nodes
-2. Distributed transactional processing: XA
+2. Distributed transactional processing: X/Open XA
 3. Reduced availability
 
 ^ XA: Blocking protocol, reduced availability
 
 ---
 
-# Database architecture - Requirements
+# CAP Theorem
+
+> It is impossible for a distributed data store to simultaneously provide more than two out of the following three guarantees: consistency, availability, partition tolerance.
+> - Eric Brewer
+
+---
+
+# Forces
 
 - Services must be **loosely coupled**
 - **Enforce invariants** that span multiple services
@@ -196,14 +206,20 @@ Declarative configuration and automation for for managing containerized services
 
 ---
 
+![inline](images/exploring.png)
+
+---
+
 # Database per service - Advantages
 
 1. Loose coupling
 2. Different data storages
+3. Deployed, scaled and tested independently
+4. Resiliency
 
 ---
 
-# Database per service - Drawbacks
+# Database per service - Drawbacks 😭
 
 1. Transactions across services
   - **Saga pattern** at application level
@@ -220,12 +236,6 @@ Declarative configuration and automation for for managing containerized services
 
 ---
 
-# Replication
-
-![inline](images/heartbeat.svg)
-
----
-
 # Sharding
 
 ![inline](images/sharding.svg)
@@ -233,12 +243,6 @@ Declarative configuration and automation for for managing containerized services
 ^ - Balanced write/read, can target specific shard if query includes key
 - Storage
 - Availability
-
----
-
-# Sharding
-
-![inline](images/mongos.svg)
 
 ---
 
@@ -250,14 +254,19 @@ Declarative configuration and automation for for managing containerized services
 
 1. Retrieve data scattered across multiple services
 2. Enforcing business invariants
-3. Inefficient/unsupported query in service storage database
+3. Handle inefficient/unsupported query in service storage database
 
 ---
 
 # Solutions
 
 - API Composition / Gateway
-- **CQRS**
+- **Command Query Responsibility Segregation (CQRS)**
+
+^ API composition inefficient
+Reduced availability
+Network usage
+Avoid centralizing logic
 
 ---
 
@@ -281,18 +290,18 @@ Replication lag
 
 - Sync is blocking: a service waits for the response
 - Sync reduces availability
-- Sometimes sync REST API are required
+- But sync REST API are required
 
 ^ REST is a request/reply protocol
 
 ---
 
-# Message queuing
+# Forces
 
-- Delivery guarantees
-- Communication **loosely coupled in time**
-
-![right fit](images/message-queue-small.png)
+- Async and time decoupled communication
+- Availability
+- Loose coupling
+- Message buffering
 
 ---
 
@@ -300,7 +309,20 @@ Replication lag
 
 - RPC is *usually* sync
 - RPC increases coupling and reduces availability
-- MQ can be persisted
+- MQ can be persisted and guarantees delivery
+- MQ is **loosely coupled in time**
+
+![right fit](images/message-queue-small.png)
+
+^ RPC: know procedure name and interface
+
+---
+
+**The biggest issue** in changing a monolith into microservices lies in changing the communication pattern.
+
+A naive conversion from in-memory method calls to RPC leads to chatty communications which don't perform well. 
+
+> - Martin Fowler
 
 ---
 
@@ -322,6 +344,25 @@ Replication lag
 - Potential single point of failure
 
 ![right fit](images/broker-based.png)
+
+---
+
+# Message broker charateristics
+
+- Message ordering
+- Delivery guarantees
+- Persistence
+- Durability
+- Latency
+
+---
+
+# Not a panacea
+
+- Message duplication
+  - **Idempotent** message handlers
+  - Track messages
+- Transactional messaging
 
 ---
 
@@ -348,9 +389,15 @@ Replication lag
 
 ---
 
-# Saga
+# Distributed transaction management
+
+---
+
+# Orchestrator Saga
 
 ![inline](images/order-saga.png)
+
+^ Correlation id
 
 ---
 
@@ -363,11 +410,72 @@ Replication lag
 
 ---
 
-# Reactive programming
+# Compensating transactions
+
+![inline](images/compensation.png)
+
+---
+
+# Anomalies
+
+> An anomaly is when a transaction reads or writes data in a way that it wouldn’t if transactions were executed one at time.
+
+1. Lost updates
+2. Dirty reads
+
+---
+
+# Counter-measures [^2]
+
+- Semantic lock
+- Commutative updates
+- Pessimistic view
+- Reread value
+
+[^2]: [Semantic ACID properties in multidatabases using remote procedure calls and update propagations](https://dl.acm.org/citation.cfm?id=284472.284478)
+
+^ Lock: deadlocks
 
 ---
 
 ![inline](images/order-saga-channels.png)
+
+---
+
+![inline](images/order-service.png)
+
+---
+
+# Forces
+
+- A paradigm to manage **sequences of async events**
+- Push based programming
+- Responsive
+- Non-blocking
+
+^ Can handle change, instead of discrete
+
+---
+
+# Reactive systems [^3]
+
+- Systems which continuously respond to
+inputs
+- Reactive systems interact with the environment at a pace dictated by the environment
+
+^ vs transformational systems
+
+[^3]: [Reactive programming and its effect on performance and the development process](http://lup.lub.lu.se/luur/download?func=downloadFile&recordOId=8932146&fileOId=8932147)
+
+---
+
+# Reactive programming [^4]
+
+[^4]: [Functional Reactive Animation 1997](http://conal.net/papers/icfp97/)
+
+---
+
+> Reactive programming is a declarative programming paradigm concerned with data streams and the propagation of change.
 
 ---
 
@@ -380,62 +488,20 @@ Replication lag
 
 ---
 
-# Final notes
-
-- How to organize code: **monorepo**
-- Is DRY dead with microservices?
-- Conway's law: how to organize the company
+![inline](images/zip.png)
 
 ---
 
-# Not covered
-
-- Service mesh: Istio / Envoy Proxy
-- Authentication
-
-^ Network is not secure
+![inline](images/clickstream.png)
 
 ---
 
-# Microservices - Advantages
+[.background-color: #FFFFFF]
 
-- **Continuous delivery** and deployment of large, complex applications
-- Small and easily maintained by autonomous teams
-- Independently **deployable and scalable**
-- Better **fault isolation**
-- Adoption of different technologies
-
----
-
-# Microservices - Disadvantages
-
-- Complexity of creating a distributed system
-- Careful coordination between services
-- Interprocess communication mechanism
-- Each service has its own database: challenging transactions and queries
+![fit](images/monolith-vs-ms.png)
 
 ---
 
 > The future is already here — it’s just not very evenly distributed.
 
 > — William Gibson
-
----
-
-# References
-
-- [jiayihu/microservices](https://github.com/jiayihu/lab/tree/master/microservices)
-- [Distributed Systems, 3rd edition - Maarten van Steen, Andrew S. Tanenbaum](https://www.distributed-systems.net/)
-- [Domain-Driven Design - Eric Evans](https://www.amazon.it/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)
-- [Experimenting with microservices - Alberto Simioni, Tullio Vardanega](https://ieeexplore.ieee.org/document/8456408/)
-- [X/Open XA](https://en.wikipedia.org/wiki/X/Open_XA)
-
----
-
-# References
-
-- [Docker docs](https://docs.docker.com/)
-- [Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
-- [Microservice Architecture - Database per service](https://microservices.io/patterns/data/database-per-service.html)
-- [MongoDB Replication](https://docs.mongodb.com/manual/replication/)
-- [MongoDB Sharding](https://docs.mongodb.com/manual/sharding/)
