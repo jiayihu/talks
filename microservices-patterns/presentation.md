@@ -49,7 +49,7 @@ slidecount: true
 - Encapsulation of technology stack
 - Service isolation
 - Resource constraining
-- Location indipendence
+- Location independence
 
 ^ k8s orchestrates using resourse usage
 Machines are not pets
@@ -95,7 +95,7 @@ Machines are not pets
 
 # Kubernetes (K8s)
 
-**Declarative** configuration and **automation** for for managing containerized services
+**Declarative** configuration and **automation** for managing containerized services
 
 ![right fit](images/k8s.png)
 
@@ -215,7 +215,7 @@ Services use TCP/AMQP
 1. Loose coupling
 2. Different data storages
 3. Deployed, scaled and tested independently
-4. Resiliency
+4. Resilience
 
 ---
 
@@ -230,7 +230,7 @@ Services use TCP/AMQP
 
 ---
 
-> The hardest part About microservices: your data [^*]
+> The hardest part about microservices: your data [^*]
 
 [^*]: [The Hardest Part About Microservices: Your Data](https://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/)
 
@@ -492,7 +492,7 @@ inputs
 
 ---
 
-> Autonomy
+> Independence
 
 ---
 
