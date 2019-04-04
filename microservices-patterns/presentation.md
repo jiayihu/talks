@@ -230,19 +230,9 @@ Services use TCP/AMQP
 
 ---
 
-# Replication
+> The hardest part About microservices: your data [^*]
 
-![inline](images/replica-set.svg)
-
----
-
-# Sharding
-
-![inline](images/sharding.svg)
-
-^ - Balanced write/read, can target specific shard if query includes key
-- Storage
-- Availability
+[^*]: [The Hardest Part About Microservices: Your Data](https://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/)
 
 ---
 
@@ -499,6 +489,10 @@ inputs
 [.background-color: #FFFFFF]
 
 ![fit](images/monolith-vs-ms.png)
+
+---
+
+> Autonomy
 
 ---
 
