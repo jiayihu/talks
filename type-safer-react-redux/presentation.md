@@ -117,7 +117,7 @@ isTodayBirthday(birthdayUser) // Okay
 
 # Origins
 
-Types are important for compiled language: different types does not use the same amount of memory.
+Types are important for compiled language: different types does not use the same memory.
 
 ^ the computer needs to be made aware of that to make sure it does not enter an invalid state during runtime.
 What about not compiled languages like JavaScript?
@@ -159,7 +159,7 @@ A logic error: an erroneous or undesirable program behaviour, a contravention of
 
 ```typescript
 // Force is also needed in real life
-function getAcceleration(mass: Kg): number {}
+function getAcceleration(mass: number): number {}
 
 getAcceleration(1000) // lbs
 getAcceleration(453.592) // Kg
@@ -227,7 +227,7 @@ getAcceleration(massInLbs) // TS error
 # Opaque types
 
 ```typescript
-type Opaque<T> = { _tag: K };
+type Opaque<T> = { _tag: T };
 
 type Kg = Opaque<'Kg'>;
 type Lbs = Opaque<'Lbs'>;
@@ -246,7 +246,7 @@ const isoKg = iso<Kg>();
 
 const massInKg: Kg = isoKg.wrap(453.592)
 
-function getAcceleration(mass: Kg, force: number): number {}
+function getAcceleration(mass: Kg): number {}
 ```
 
 ---
@@ -295,6 +295,36 @@ type Branded<K, T> = K & { _tag: T };
 type Kg = Branded<number, 'Kg'>;
 type Lbs = Branded<'number, Lbs'>;
 ```
+
+<!-- ---
+
+# Refined types
+
+```typescript
+import { Newtype, prism } from 'newtype-ts'
+
+interface Kg extends Newtype<
+  { readonly Kg: unique symbol }, number> {}
+
+const isKg = (n: number): boolean => n > 0
+
+const prismKg = prism<Kg>(isKg)
+
+const oCard: Option<Kg> = prismKg.getOption(119)
+```
+
+---
+
+# Option
+
+```ts
+type Option<A> =
+  | { type: 'None' }
+  | {
+      type: 'Some',
+      value: A
+    }
+``` -->
 
 ---
 
@@ -484,10 +514,13 @@ type Pickup =
 
 ---
 
+[.code-highlight: 3-9]
+
 ```ts
 function handleShipping(address: ShippingAddress) {
   switch (address.type) {
     case 'SendToHome':
+      console.log(address.company)
       return;
     case 'SendToPickupPoint':
       console.log(address.company)
@@ -523,7 +556,7 @@ export type PaymentMethod = CardPayment | CashPayment | ChequePayment
 
 ^ Ubiquitous language
 
----
+<!-- ---
 
 ```typescript
 function render(payment: PaymentMethod) {
@@ -541,43 +574,7 @@ function render(payment: PaymentMethod) {
 ```typescript
 function renderCardPayment(cardPayment: CardPayment)
   : React.ReactElement {}
-```
-
-<!-- ---
-
-# Refinements
-
-```typescript
-import { Newtype, prism } from 'newtype-ts'
-
-interface CardCode extends Newtype<
-  { readonly CardCode: unique symbol }, number> {}
-
-const isCardCode = (n: number): boolean => { ... }
-
-const prismCardCode = prism<CardCode>(isCardCode)
-
-const oCard: Option<CardCode> = prismCardCode.getOption(119)
-```
-
----
-
-# Option
-
-```ts
-type Option<A> =
-  | { type: 'None' }
-  | {
-      type: 'Some',
-      value: A
-    }
-```
-
----
-
-# [gcanti/fp-ts](https://github.com/gcanti/fp-ts)
-
-![inline](assets/fp-ts-logo.png) -->
+``` -->
 
 ---
 
@@ -605,7 +602,7 @@ class Select extends React.Component<Props> {}
 
 ```typescript
 <Select
-  value={['Ocean', 'Blue']} // Missing 'multiple' prop
+  value={['Ocean', 'Blue']} // Missing 'isMultiple' prop
   onChange={onChange}
 />
 
@@ -705,7 +702,7 @@ export class CardMenu extends React.Component<{}, CardMenuState> {
   }
 }
 ```
-
+<!-- 
 ---
 
 ```typescript
@@ -721,7 +718,7 @@ export class CardMenu extends React.Component<{}, CardMenuState> {
     }
   }
 }
-```
+``` -->
 
 ---
 
@@ -747,13 +744,11 @@ type LoginAction = {
   payload: { username: string, role: string }
 };
 type LogoutAction = { type: 'LOGOUT_USER' };
-type UpdateUserAction = { type: 'UPDATE_USER' };
 type OtherActions = { type: '__OTHER_ACTIONS__' }
 
 type Action = 
   | LoginAction
   | LogoutAction
-  | UpdateUserAction
   | OtherActions
 ```
 
@@ -785,10 +780,8 @@ Warning about missing default
 - Opaque/Branded types
 - Intersection types
 - Sum types
-
----
-
-> types, types, types ...
+- Type refinements (What if the mass is a negative number?)
+- Phantom types
 
 ---
 
@@ -802,6 +795,12 @@ Warning about missing default
 # Jiayi Hu
 
 ## Front-end consultant, based at Padova (IT).
+
+---
+
+Twitter: [@jiayi_ghu](https://twitter.com/jiayi_ghu)
+
+Slides: [github.com/jiayihu/talks](github.com/jiayihu/talks)
 
 ---
 
