@@ -89,9 +89,9 @@ function isAdultUser(user: User): boolean {
   return user.age >= 18
 }
 
-isAdultUser({ name: 'Jiayi', age: 23 }) // Okay
-isAdultUser({ name: 'Jiayi', age: 23, surname: 'Hu' }) // Okay
-isAdultUser({ name: 'Jiayi', age: 23, birthday: new Date() }) // Okay
+isAdultUser(user) // Okay
+isAdultUser(surnameUser) // Okay
+isAdultUser(birthdayUser) // Okay
 ```
 
 <!-- ---
@@ -487,6 +487,8 @@ function handleShipping(address: ShippingAddress) {
 ```
 
 [^1]: [tc39/proposal-pattern-matching](https://github.com/tc39/proposal-pattern-matching)
+
+^ Exhaustive type checking
 
 ---
 

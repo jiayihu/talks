@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 0 600 70"  width="600" height="70">
+    <rect x="1" y="1" width="110" height="50" fill="#fff" stroke="#D4DDE4" stroke-width="2px"/>
+    <text x="56" y="30" font-size="12px" font-family="Consolas,Monaco,Andale Mono,monospace" fill="#4D4E53" text-anchor="middle" alignment-baseline="middle">
+        EventTarget
+    </text>
+    <polyline points="111,25  121,20  121,30  111,25" stroke="#D4DDE4" fill="none"/>
+    <line x1="121" y1="25" x2="151" y2="25" stroke="#D4DDE4"/>
+    <rect x="151" y="1" width="75" height="50" fill="#fff" stroke="#D4DDE4" stroke-width="2px"/>
+    <text x="188.5" y="30" font-size="12px" font-family="Consolas,Monaco,Andale Mono,monospace" fill="#4D4E53" text-anchor="middle" alignment-baseline="middle">
+        Node
+    </text>
+    <polyline points="226,25  236,20  236,30  226,25" stroke="#D4DDE4" fill="none"/>
+    <line x1="236" y1="25" x2="266" y2="25" stroke="#D4DDE4"/>
+    <rect x="266" y="1" width="75" height="50" fill="#fff" stroke="#D4DDE4" stroke-width="2px"/>
+    <text x="303.5" y="30" font-size="12px" font-family="Consolas,Monaco,Andale Mono,monospace" fill="#4D4E53" text-anchor="middle" alignment-baseline="middle">
+        Element
+    </text>
+    <polyline points="341,25  351,20  351,30  341,25" stroke="#D4DDE4" fill="none"/>
+    <line x1="351" y1="25" x2="381" y2="25" stroke="#D4DDE4"/>
+    <rect x="381" y="1" width="110" height="50" fill="#F4F7F8" stroke="#D4DDE4" stroke-width="2px"/>
+    <text x="436" y="30" font-size="12px" font-family="Consolas,Monaco,Andale Mono,monospace" fill="#4D4E53" text-anchor="middle" alignment-baseline="middle">
+        HTMLElement
+    </text>
+</svg>
