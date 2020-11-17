@@ -1,8 +1,8 @@
-footer: State of state machines in React
+footer: State of state machines in front-end
 slidenumbers: true
 slidecount: true
 
-![fit](images/cover.png)
+![](images/cover.png)
 
 ---
 
