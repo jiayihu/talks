@@ -2,6 +2,10 @@
 
 ## 2020
 
+- [A philosophy of React software design](https://github.com/jiayihu/talks/tree/master/philosophy-react). @ReactJSDay Verona. October 2022.
+
+## 2020
+
 - [State of state machines in React](https://github.com/jiayihu/talks/tree/master/state-machines-react). @Codemotion. Nov 2020
 - [An introduction to the strange APIs of IndexedDB](https://github.com/jiayihu/talks/tree/master/introduction-to-indexeddb). @PWAConf. June 2020.
 
